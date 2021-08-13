@@ -25,7 +25,6 @@ namespace UdmClean.Application.Features.LeaveTypes.Handlers.Queries
         {
             var leaveTypes = await _leaveTypeRepository.GetAllAsync();
             return _mapper.Map<List<LeaveTypeDto>>(leaveTypes);
-
         }
     }
 }

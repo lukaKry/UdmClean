@@ -5,23 +5,25 @@ VisualStudioVersion = 16.0.31605.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{7AF71D3A-9BA1-4E3A-B974-84BE291EA3C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdmClean.Domain", "UdmClean.Domain\UdmClean.Domain.csproj", "{00F996CA-3402-4A36-8683-25E6104B092C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdmClean.Domain", "UdmClean.Domain\UdmClean.Domain.csproj", "{00F996CA-3402-4A36-8683-25E6104B092C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EBAC9771-A92B-4C08-A807-9A6F07588588}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{7F0C8EA9-5C36-450F-8698-4246838D9116}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdmClean.Application", "UdmClean.Application\UdmClean.Application.csproj", "{BC60D6E1-845C-4FC7-9F14-381B7B9C5EA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdmClean.Application", "UdmClean.Application\UdmClean.Application.csproj", "{BC60D6E1-845C-4FC7-9F14-381B7B9C5EA7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{A7E13629-81AD-4BDB-8C05-2BCB216D1CBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdmClean.Infrastructure", "UdmClean.Infrastructure\UdmClean.Infrastructure.csproj", "{59F0B389-BC27-4F71-A67B-E2D03B257B0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdmClean.Infrastructure", "UdmClean.Infrastructure\UdmClean.Infrastructure.csproj", "{59F0B389-BC27-4F71-A67B-E2D03B257B0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdmClean.Persistence", "UdmClean.Persistence\UdmClean.Persistence.csproj", "{4761941C-2156-42D2-ADE9-84457B67A35D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdmClean.Persistence", "UdmClean.Persistence\UdmClean.Persistence.csproj", "{4761941C-2156-42D2-ADE9-84457B67A35D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{8BE0FF40-73A0-4133-A935-CA058ADF457A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdmClean.Api", "UdmClean.Api\UdmClean.Api.csproj", "{E52879F6-C54E-4863-A002-33F02212E3B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdmClean.Api", "UdmClean.Api\UdmClean.Api.csproj", "{E52879F6-C54E-4863-A002-33F02212E3B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdmClean.Application.UnitTests", "UdmClean.Application.UnitTests\UdmClean.Application.UnitTests.csproj", "{D773045F-A87B-4B92-AE17-7835B63A71FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{E52879F6-C54E-4863-A002-33F02212E3B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E52879F6-C54E-4863-A002-33F02212E3B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E52879F6-C54E-4863-A002-33F02212E3B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D773045F-A87B-4B92-AE17-7835B63A71FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D773045F-A87B-4B92-AE17-7835B63A71FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D773045F-A87B-4B92-AE17-7835B63A71FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D773045F-A87B-4B92-AE17-7835B63A71FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +68,7 @@ Global
 		{4761941C-2156-42D2-ADE9-84457B67A35D} = {A7E13629-81AD-4BDB-8C05-2BCB216D1CBD}
 		{8BE0FF40-73A0-4133-A935-CA058ADF457A} = {EBAC9771-A92B-4C08-A807-9A6F07588588}
 		{E52879F6-C54E-4863-A002-33F02212E3B6} = {8BE0FF40-73A0-4133-A935-CA058ADF457A}
+		{D773045F-A87B-4B92-AE17-7835B63A71FE} = {7F0C8EA9-5C36-450F-8698-4246838D9116}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0F15F12-3BCD-4471-98E6-B6D2FCCDE280}
