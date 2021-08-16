@@ -21,11 +21,11 @@ namespace UdmClean.Application.DTOs.LeaveRequest.Validators
                 .GreaterThan(p => p.StartDate).WithMessage("{PropertyName} must be after {ComparisonValue}");
 
             RuleFor(p => p.LeaveTypeId)
-                .GreaterThan(0)
+                .GreaterThan(0).WithMessage("{PropertyName} must be greater than {ComparisonValue}")
                 .MustAsync(async (id, token) =>
                 {
                     var leaveTypeExist = await _leaveTypeRepository.ExistsAsync(id);
-                    return !leaveTypeExist;
+                    return leaveTypeExist;
                 })
                 .WithMessage("{PropertyName} does not exist.");
         }

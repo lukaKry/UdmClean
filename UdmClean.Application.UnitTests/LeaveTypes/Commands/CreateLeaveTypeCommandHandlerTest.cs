@@ -15,15 +15,15 @@ using UdmClean.Application.Profiles;
 using UdmClean.Application.UnitTests.Mocks;
 using Xunit;
 
-namespace UdmClean.Application.UnitTests.LeaveTypes.Commads
+namespace UdmClean.Application.UnitTests.LeaveTypes.Commands
 {
-    public class CreateLeaveTypeCommandHandlerTest
+    public class CreateLeaveAllocationCommandHandlerTest
     {
         private readonly IMapper _mapper;
         private readonly ILeaveTypeRepository _mockRepo;
         private readonly CreateLeaveTypeDto _createLeaveTypeDto;
         private readonly CreateLeaveTypeCommandHandler _handler;
-        public CreateLeaveTypeCommandHandlerTest()
+        public CreateLeaveAllocationCommandHandlerTest()
         {
             _mockRepo = MockLeaveTypeRepository.GetLeaveTypeRepository().Object;
 

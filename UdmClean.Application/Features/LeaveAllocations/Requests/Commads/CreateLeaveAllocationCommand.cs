@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using UdmClean.Application.DTOs.LeaveAllocation;
 
-namespace UdmClean.Application.Features.LeaveAllocations.Requests.Commads
+namespace UdmClean.Application.Features.LeaveAllocations.Requests.Commands
 {
     public class CreateLeaveAllocationCommand : IRequest<int>
     {

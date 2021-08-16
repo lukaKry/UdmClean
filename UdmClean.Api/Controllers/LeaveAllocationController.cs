@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UdmClean.Application.DTOs.LeaveAllocation;
-using UdmClean.Application.Features.LeaveAllocations.Requests.Commads;
+using UdmClean.Application.Features.LeaveAllocations.Requests.Commands;
 using UdmClean.Application.Features.LeaveAllocations.Requests.Queries;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860

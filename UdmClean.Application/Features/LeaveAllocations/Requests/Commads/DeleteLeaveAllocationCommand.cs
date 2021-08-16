@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace UdmClean.Application.Features.LeaveAllocations.Requests.Commads
+namespace UdmClean.Application.Features.LeaveAllocations.Requests.Commands
 {
     public class DeleteLeaveAllocationCommand : IRequest
     {

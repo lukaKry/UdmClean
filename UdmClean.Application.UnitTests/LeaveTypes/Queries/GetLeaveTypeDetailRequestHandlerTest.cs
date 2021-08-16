@@ -46,7 +46,7 @@ namespace UdmClean.Application.UnitTests.LeaveTypes.Queries
         }
 
         [Fact]
-        public async Task Handle_CalledWithNonExistingId_ThrowsException()
+        public async Task Handle_CalledWithNonExistingId_ThrowsNotFoundException()
         {
             // this case also isn't covered yet
         }

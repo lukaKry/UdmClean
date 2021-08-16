@@ -15,13 +15,13 @@ using UdmClean.Application.Profiles;
 using UdmClean.Application.UnitTests.Mocks;
 using Xunit;
 
-namespace UdmClean.Application.UnitTests.LeaveTypes.Commads
+namespace UdmClean.Application.UnitTests.LeaveTypes.Commands
 {
-    public class DeleteLeaveTypeCommandHandlerTest
+    public class DeleteLeaveAllocationCommandHandlerTest
     {
         private readonly ILeaveTypeRepository _mockRepo;
         private readonly DeleteLeaveTypeCommandHandler _handler;
-        public DeleteLeaveTypeCommandHandlerTest()
+        public DeleteLeaveAllocationCommandHandlerTest()
         {
             _mockRepo = MockLeaveTypeRepository.GetLeaveTypeRepository().Object;
             _handler = new DeleteLeaveTypeCommandHandler(_mockRepo);

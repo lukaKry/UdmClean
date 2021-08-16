@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\UdmClean.Application\UdmClean.Application.csproj" />
     <ProjectReference Include="..\UdmClean.Domain\UdmClean.Domain.csproj" />
+    <ProjectReference Include="..\UdmClean.Infrastructure\UdmClean.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

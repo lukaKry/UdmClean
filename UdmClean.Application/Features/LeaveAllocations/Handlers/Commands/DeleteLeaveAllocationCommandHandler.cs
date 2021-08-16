@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UdmClean.Application.Exceptions;
-using UdmClean.Application.Features.LeaveAllocations.Requests.Commads;
+using UdmClean.Application.Features.LeaveAllocations.Requests.Commands;
 using UdmClean.Application.Contracts.Persistance;
 using UdmClean.Domain;
 

@@ -19,7 +19,7 @@ namespace UdmClean.Application.DTOs.LeaveAllocation.Validators
 
             RuleFor(p => p.Id)
                .NotNull().WithMessage("{PropertyName} must be present.")
-               .GreaterThan(0)
+               .GreaterThan(0).WithMessage("Value of {PropertyName} should be greater than {ComparisonValue}.")
                .MustAsync(async (id, token) =>
                {
                    var doesExist = await _leaveAllocationRepository.ExistsAsync(id);

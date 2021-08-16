@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UdmClean.Application.DTOs.LeaveAllocation;
 using UdmClean.Application.DTOs.LeaveType;
 
 namespace UdmClean.Application.Features.LeaveTypes.Requests.Commands

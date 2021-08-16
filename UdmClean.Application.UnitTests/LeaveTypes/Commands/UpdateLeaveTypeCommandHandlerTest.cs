@@ -14,16 +14,16 @@ using UdmClean.Application.Profiles;
 using UdmClean.Application.UnitTests.Mocks;
 using Xunit;
 
-namespace UdmClean.Application.UnitTests.LeaveTypes.Commads
+namespace UdmClean.Application.UnitTests.LeaveTypes.Commands
 {
-    public class UpdateLeaveTypeCommandHandlerTest
+    public class UpdateLeaveAllocationCommandHandlerTest
     {
         private readonly IMapper _mapper;
         private readonly ILeaveTypeRepository _mockRepo;
         private readonly UpdateLeaveTypeCommandHandler _handler;
         private LeaveTypeDto _leaveTypeDto;
 
-        public UpdateLeaveTypeCommandHandlerTest()
+        public UpdateLeaveAllocationCommandHandlerTest()
         {
             var mapperConfig = new MapperConfiguration( c => c.AddProfile<MappingProfile>());
             _mapper = mapperConfig.CreateMapper();

@@ -47,6 +47,12 @@ namespace UdmClean.Application.UnitTests.Mocks
                 leaveTypes[leaveTypes.FindIndex(p => p.Id == leaveType.Id)] = leaveType;
             });
 
+            mockRepo.Setup(r => r.ExistsAsync(It.IsAny<int>())).ReturnsAsync((int x) =>
+            {
+                var leaveType = leaveTypes.Find(p => p.Id == x);
+                return leaveType is not null;
+            });
+
             return mockRepo;
         }
     }
