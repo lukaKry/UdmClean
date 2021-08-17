@@ -10,10 +10,12 @@ using UdmClean.Application.Exceptions;
 using UdmClean.Application.Features.LeaveAllocations.Requests.Commands;
 using UdmClean.Application.Contracts.Persistance;
 using UdmClean.Domain;
+using UdmClean.Application.Responses;
+using System.Linq;
 
 namespace UdmClean.Application.Features.LeaveAllocations.Handlers.Commands
 {
-    public class CreateLeaveAllocationCommandHandler : IRequestHandler<CreateLeaveAllocationCommand, int>
+    public class CreateLeaveAllocationCommandHandler : IRequestHandler<CreateLeaveAllocationCommand, BaseCommandResponse>
     {
         private readonly ILeaveAllocationRepository _leaveAllocationRepository;
         private readonly IMapper _mapper;
@@ -25,18 +27,28 @@ namespace UdmClean.Application.Features.LeaveAllocations.Handlers.Commands
             _leaveTypeRepository = leaveTypeRepository;
             _mapper = mapper;
         }
-        public async Task<int> Handle(CreateLeaveAllocationCommand request, CancellationToken cancellationToken)
+        public async Task<BaseCommandResponse> Handle(CreateLeaveAllocationCommand request, CancellationToken cancellationToken)
         {
+            var response = new BaseCommandResponse();
             var validator = new CreateLeaveAllocationDtoValidator(_leaveTypeRepository);
             var validationResult = await validator.ValidateAsync(request.LeaveAllocationDto);
 
-            if (validationResult.IsValid == false) throw new ValidationException(validationResult);
+            if (validationResult.IsValid == false)
+            {
+                response.Success = false;
+                response.Message = "Data validation error. Check errors for details.";
+                response.Errors = validationResult.Errors.Select(q => q.ErrorMessage).ToList();
+            }
+            else
+            {
+                var leaveAllocation = _mapper.Map<LeaveAllocation>(request.LeaveAllocationDto);
+                leaveAllocation = await _leaveAllocationRepository.AddAsync(leaveAllocation);
 
-            var leaveAllocation = _mapper.Map<LeaveAllocation>(request.LeaveAllocationDto);
-
-            leaveAllocation = await _leaveAllocationRepository.AddAsync(leaveAllocation);
-
-            return leaveAllocation.Id;
+                response.Success = true;
+                response.Message = "Item Created successfully.";
+                response.Id = leaveAllocation.Id;
+            }
+            return response;
         }
     }
 }

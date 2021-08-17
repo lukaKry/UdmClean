@@ -10,10 +10,12 @@ using UdmClean.Application.Exceptions;
 using UdmClean.Application.Features.LeaveTypes.Requests.Commands;
 using UdmClean.Application.Contracts.Persistance;
 using UdmClean.Domain;
+using UdmClean.Application.Responses;
+using System.Linq;
 
 namespace UdmClean.Application.Features.LeaveTypes.Handlers.Commands
 {
-    public class CreateLeaveTypeCommandHandler : IRequestHandler<CreateLeaveTypeCommand, int>
+    public class CreateLeaveTypeCommandHandler : IRequestHandler<CreateLeaveTypeCommand, BaseCommandResponse>
     {
         private readonly ILeaveTypeRepository _leaveTypeRepository;
         private readonly IMapper _mapper;
@@ -23,19 +25,29 @@ namespace UdmClean.Application.Features.LeaveTypes.Handlers.Commands
             _leaveTypeRepository = leaveTypeRepository;
             _mapper = mapper;
         }
-        public async Task<int> Handle(CreateLeaveTypeCommand request, CancellationToken cancellationToken)
+        public async Task<BaseCommandResponse> Handle(CreateLeaveTypeCommand request, CancellationToken cancellationToken)
         {
             var validator = new CreateLeaveTypeDtoValidator();
             var validationResult = await validator.ValidateAsync(request.LeaveTypeDto);
 
-            if (validationResult.IsValid == false) throw new ValidationException(validationResult);
+            var response = new BaseCommandResponse();
+           
+            if(validationResult.IsValid == false)
+            {
+                response.Success = false;
+                response.Message = "Data validation error. Check Errors for details.";
+                response.Errors = validationResult.Errors.Select(q => q.ErrorMessage).ToList();
+            }
+            else
+            {
+                var leaveType = _mapper.Map<LeaveType>(request.LeaveTypeDto);
+                leaveType = await _leaveTypeRepository.AddAsync(leaveType);
 
-            var leaveType = _mapper.Map<LeaveType>(request.LeaveTypeDto);
-
-            leaveType = await _leaveTypeRepository.AddAsync(leaveType);
-
-            return leaveType.Id;
-            
+                response.Success = true;
+                response.Message = "Creation ended successfully.";
+                response.Id = leaveType.Id;
+            }
+            return response;
         }
     }
 }

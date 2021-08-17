@@ -8,10 +8,11 @@ using UdmClean.Application.Exceptions;
 using UdmClean.Application.Features.LeaveRequests.Requests.Commands;
 using UdmClean.Application.Contracts.Persistance;
 using UdmClean.Domain;
+using UdmClean.Application.Responses;
 
 namespace UdmClean.Application.Features.LeaveRequests.Handlers.Commands
 {
-    public class DeleteLeaveRequestCommandHandler : IRequestHandler<DeleteLeaveRequestCommand>
+    public class DeleteLeaveRequestCommandHandler : IRequestHandler<DeleteLeaveRequestCommand, BaseCommandResponse>
     {
         private readonly ILeaveRequestRepository _leaveRequestRepository;
 
@@ -19,16 +20,24 @@ namespace UdmClean.Application.Features.LeaveRequests.Handlers.Commands
         {
             _leaveRequestRepository = leaveRequestRepository;
         }
-        public async Task<Unit> Handle(DeleteLeaveRequestCommand request, CancellationToken cancellationToken)
+        public async Task<BaseCommandResponse> Handle(DeleteLeaveRequestCommand request, CancellationToken cancellationToken)
         {
+            var response = new BaseCommandResponse();
             var leaveRequest = await _leaveRequestRepository.GetAsync(request.Id);
 
-            if (leaveRequest == null) throw new NotFoundException(nameof(LeaveRequest), request.Id);
+            if (leaveRequest == null)
+            {
+                response.Success = false;
+                response.Message = "Data validation error. Check Errors for details.";
+            }
+            else
+            {
+                await _leaveRequestRepository.DeleteAsync(leaveRequest);
 
-            await _leaveRequestRepository.DeleteAsync(leaveRequest);
-
-            return Unit.Value;
-
+                response.Success = true;
+                response.Message = "Item deleted successfully.";
+            }
+            return response;
         }
     }
 }

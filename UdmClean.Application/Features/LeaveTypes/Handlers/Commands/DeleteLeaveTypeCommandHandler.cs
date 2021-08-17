@@ -9,10 +9,11 @@ using UdmClean.Application.Exceptions;
 using UdmClean.Application.Features.LeaveTypes.Requests.Commands;
 using UdmClean.Application.Contracts.Persistance;
 using UdmClean.Domain;
+using UdmClean.Application.Responses;
 
 namespace UdmClean.Application.Features.LeaveTypes.Handlers.Commands
 {
-    public class DeleteLeaveTypeCommandHandler : IRequestHandler<DeleteLeaveTypeCommand>
+    public class DeleteLeaveTypeCommandHandler : IRequestHandler<DeleteLeaveTypeCommand, BaseCommandResponse>
     {
         private readonly ILeaveTypeRepository _leaveTypeRepository;
 
@@ -20,15 +21,24 @@ namespace UdmClean.Application.Features.LeaveTypes.Handlers.Commands
         {
             _leaveTypeRepository = leaveTypeRepository;
         }
-        public async Task<Unit> Handle(DeleteLeaveTypeCommand request, CancellationToken cancellationToken)
+        public async Task<BaseCommandResponse> Handle(DeleteLeaveTypeCommand request, CancellationToken cancellationToken)
         {
+            var response = new BaseCommandResponse();
             var leaveType = await _leaveTypeRepository.GetAsync(request.Id);
 
-            if (leaveType == null) throw new NotFoundException(nameof(LeaveType), request.Id);
+            if (leaveType == null)
+            {
+                response.Success = false;
+                response.Message = "Not found error. There is no item with given id.";
+            }
+            else
+            {
+                await _leaveTypeRepository.DeleteAsync(leaveType);
 
-            await _leaveTypeRepository.DeleteAsync(leaveType);
-
-            return Unit.Value;
+                response.Success = true;
+                response.Message = "Item deleted successfully.";
+            }
+            return response;
         }
     }
 }

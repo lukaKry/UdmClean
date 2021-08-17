@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace UdmClean.UI.Contracts
 {
-    interface ILeaveTypeService
+    public interface ILeaveTypeService
     {
+
     }
 }

@@ -73,7 +73,6 @@ namespace UdmClean.Application.Features.LeaveRequests.Handlers.Commands
                 // catch error but not throw it... 
             }
 
-
             return response;
         }
     }

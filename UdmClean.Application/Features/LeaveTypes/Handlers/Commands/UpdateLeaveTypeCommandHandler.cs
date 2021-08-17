@@ -10,10 +10,12 @@ using UdmClean.Application.DTOs.LeaveType.Validators;
 using UdmClean.Application.Exceptions;
 using UdmClean.Application.Features.LeaveTypes.Requests.Commands;
 using UdmClean.Application.Contracts.Persistance;
+using UdmClean.Application.Responses;
+using System.Linq;
 
 namespace UdmClean.Application.Features.LeaveTypes.Handlers.Commands
 {
-    public class UpdateLeaveTypeCommandHandler : IRequestHandler<UpdateLeaveTypeCommand, Unit>
+    public class UpdateLeaveTypeCommandHandler : IRequestHandler<UpdateLeaveTypeCommand, BaseCommandResponse>
     {
         private readonly ILeaveTypeRepository _leaveTypeRepository;
         private readonly IMapper _mapper;
@@ -23,20 +25,29 @@ namespace UdmClean.Application.Features.LeaveTypes.Handlers.Commands
             _leaveTypeRepository = leaveTypeRepository;
             _mapper = mapper;
         }
-        public async Task<Unit> Handle(UpdateLeaveTypeCommand request, CancellationToken cancellationToken)
+        public async Task<BaseCommandResponse> Handle(UpdateLeaveTypeCommand request, CancellationToken cancellationToken)
         {
+            var response = new BaseCommandResponse();
             var validator = new UpdateLeaveTypeDtoValidator();
             var validationResult = await validator.ValidateAsync(request.LeaveTypeDto);
 
-            if (validationResult.IsValid == false) throw new ValidationException(validationResult);
+            if (validationResult.IsValid == false)
+            {
+                response.Success = false;
+                response.Message = "Data validation error. Check Errors for details.";
+                response.Errors = validationResult.Errors.Select(q => q.ErrorMessage).ToList();
+            }
+            else
+            {
+                var leaveType = await _leaveTypeRepository.GetAsync(request.LeaveTypeDto.Id);
+                _mapper.Map(request.LeaveTypeDto, leaveType);
+                await _leaveTypeRepository.UpdateAsync(leaveType);
 
-            var leaveType = await _leaveTypeRepository.GetAsync(request.LeaveTypeDto.Id);
-
-            _mapper.Map(request.LeaveTypeDto, leaveType);
-
-            await _leaveTypeRepository.UpdateAsync(leaveType);
-
-            return Unit.Value;
+                response.Success = true;
+                response.Message = "Update made successfully.";
+                response.Id = leaveType.Id;
+            }
+            return response;
         }
     }
 }

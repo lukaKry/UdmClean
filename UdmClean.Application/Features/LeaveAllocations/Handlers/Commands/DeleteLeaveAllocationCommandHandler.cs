@@ -8,10 +8,11 @@ using UdmClean.Application.Exceptions;
 using UdmClean.Application.Features.LeaveAllocations.Requests.Commands;
 using UdmClean.Application.Contracts.Persistance;
 using UdmClean.Domain;
+using UdmClean.Application.Responses;
 
 namespace UdmClean.Application.Features.LeaveAllocations.Handlers.Commands
 {
-    public class DeleteLeaveAllocationCommandHandler : IRequestHandler<DeleteLeaveAllocationCommand>
+    public class DeleteLeaveAllocationCommandHandler : IRequestHandler<DeleteLeaveAllocationCommand, BaseCommandResponse>
     {
         private readonly ILeaveAllocationRepository _leaveAllocationRepository;
 
@@ -19,15 +20,24 @@ namespace UdmClean.Application.Features.LeaveAllocations.Handlers.Commands
         {
             _leaveAllocationRepository = leaveAllocationRepository;
         }
-        public async Task<Unit> Handle(DeleteLeaveAllocationCommand request, CancellationToken cancellationToken)
+        public async Task<BaseCommandResponse> Handle(DeleteLeaveAllocationCommand request, CancellationToken cancellationToken)
         {
+            var response = new BaseCommandResponse();
             var leaveAllocation = await _leaveAllocationRepository.GetAsync(request.Id);
 
-            if (leaveAllocation == null) throw new NotFoundException(nameof(LeaveAllocation), request.Id);
+            if (leaveAllocation == null)
+            {
+                response.Success = false;
+                response.Message = "Not found error. There is no item with given id.";
+            }
+            else
+            {
+                await _leaveAllocationRepository.DeleteAsync(leaveAllocation);
 
-            await _leaveAllocationRepository.DeleteAsync(leaveAllocation);
-
-            return Unit.Value;
+                response.Success = true;
+                response.Message = "Item deleted successfully.";
+            }
+            return response;
         }
     }
 }
