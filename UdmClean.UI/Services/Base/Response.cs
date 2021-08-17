@@ -10,6 +10,6 @@ namespace UdmClean.UI.Services.Base
         public string Message { get; set; }
         public string ValidationErrors { get; set; }
         public bool Success { get; set; }
-        public T GetT { get; set; }
+        public T Data { get; set; }
     }
 }

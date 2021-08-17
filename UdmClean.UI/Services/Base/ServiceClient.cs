@@ -30,12 +30,12 @@ namespace UdmClean.UI.Services.Base
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<int> LeaveAllocationPOSTAsync(CreateLeaveAllocationDto body);
+        System.Threading.Tasks.Task<BaseCommandResponse> LeaveAllocationPOSTAsync(CreateLeaveAllocationDto body);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<int> LeaveAllocationPOSTAsync(CreateLeaveAllocationDto body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<BaseCommandResponse> LeaveAllocationPOSTAsync(CreateLeaveAllocationDto body, System.Threading.CancellationToken cancellationToken);
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -75,12 +75,12 @@ namespace UdmClean.UI.Services.Base
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<int> LeaveRequestPOSTAsync(CreateLeaveRequestDto body);
+        System.Threading.Tasks.Task<BaseCommandResponse> LeaveRequestPOSTAsync(CreateLeaveRequestDto body);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<int> LeaveRequestPOSTAsync(CreateLeaveRequestDto body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<BaseCommandResponse> LeaveRequestPOSTAsync(CreateLeaveRequestDto body, System.Threading.CancellationToken cancellationToken);
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -129,12 +129,12 @@ namespace UdmClean.UI.Services.Base
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<int> LeaveTypePOSTAsync(CreateLeaveTypeDto body);
+        System.Threading.Tasks.Task<BaseCommandResponse> LeaveTypePOSTAsync(CreateLeaveTypeDto body);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<int> LeaveTypePOSTAsync(CreateLeaveTypeDto body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<BaseCommandResponse> LeaveTypePOSTAsync(CreateLeaveTypeDto body, System.Threading.CancellationToken cancellationToken);
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -168,13 +168,11 @@ namespace UdmClean.UI.Services.Base
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.13.2.0 (NJsonSchema v10.5.2.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class Client : IClient
     {
-        private string _baseUrl = "";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
     
-        public Client(string baseUrl, System.Net.Http.HttpClient httpClient)
+        public Client(System.Net.Http.HttpClient httpClient)
         {
-            BaseUrl = baseUrl;
             _httpClient = httpClient;
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
         }
@@ -184,12 +182,6 @@ namespace UdmClean.UI.Services.Base
             var settings = new Newtonsoft.Json.JsonSerializerSettings();
             UpdateJsonSerializerSettings(settings);
             return settings;
-        }
-    
-        public string BaseUrl
-        {
-            get { return _baseUrl; }
-            set { _baseUrl = value; }
         }
     
         protected Newtonsoft.Json.JsonSerializerSettings JsonSerializerSettings { get { return _settings.Value; } }
@@ -213,7 +205,7 @@ namespace UdmClean.UI.Services.Base
         public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<LeaveAllocationDto>> LeaveAllocationAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveAllocation");
+            urlBuilder_.Append("api/LeaveAllocation");
     
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -276,7 +268,7 @@ namespace UdmClean.UI.Services.Base
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<int> LeaveAllocationPOSTAsync(CreateLeaveAllocationDto body)
+        public System.Threading.Tasks.Task<BaseCommandResponse> LeaveAllocationPOSTAsync(CreateLeaveAllocationDto body)
         {
             return LeaveAllocationPOSTAsync(body, System.Threading.CancellationToken.None);
         }
@@ -284,10 +276,10 @@ namespace UdmClean.UI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<int> LeaveAllocationPOSTAsync(CreateLeaveAllocationDto body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<BaseCommandResponse> LeaveAllocationPOSTAsync(CreateLeaveAllocationDto body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveAllocation");
+            urlBuilder_.Append("api/LeaveAllocation");
     
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -324,7 +316,7 @@ namespace UdmClean.UI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<int>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<BaseCommandResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -364,7 +356,7 @@ namespace UdmClean.UI.Services.Base
         public async System.Threading.Tasks.Task LeaveAllocationPUTAsync(UpdateLeaveAllocationDto body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveAllocation");
+            urlBuilder_.Append("api/LeaveAllocation");
     
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -438,7 +430,7 @@ namespace UdmClean.UI.Services.Base
                 throw new System.ArgumentNullException("id");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveAllocation/{id}");
+            urlBuilder_.Append("api/LeaveAllocation/{id}");
             urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = _httpClient;
@@ -516,7 +508,7 @@ namespace UdmClean.UI.Services.Base
                 throw new System.ArgumentNullException("id");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveAllocation/{id}");
+            urlBuilder_.Append("api/LeaveAllocation/{id}");
             urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = _httpClient;
@@ -585,7 +577,7 @@ namespace UdmClean.UI.Services.Base
         public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<LeaveRequestListDto>> LeaveRequestAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveRequest");
+            urlBuilder_.Append("api/LeaveRequest");
     
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -648,7 +640,7 @@ namespace UdmClean.UI.Services.Base
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<int> LeaveRequestPOSTAsync(CreateLeaveRequestDto body)
+        public System.Threading.Tasks.Task<BaseCommandResponse> LeaveRequestPOSTAsync(CreateLeaveRequestDto body)
         {
             return LeaveRequestPOSTAsync(body, System.Threading.CancellationToken.None);
         }
@@ -656,10 +648,10 @@ namespace UdmClean.UI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<int> LeaveRequestPOSTAsync(CreateLeaveRequestDto body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<BaseCommandResponse> LeaveRequestPOSTAsync(CreateLeaveRequestDto body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveRequest");
+            urlBuilder_.Append("api/LeaveRequest");
     
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -696,7 +688,7 @@ namespace UdmClean.UI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<int>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<BaseCommandResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -736,7 +728,7 @@ namespace UdmClean.UI.Services.Base
         public async System.Threading.Tasks.Task LeaveRequestPUTAsync(UpdateLeaveRequestDto body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveRequest");
+            urlBuilder_.Append("api/LeaveRequest");
     
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -810,7 +802,7 @@ namespace UdmClean.UI.Services.Base
                 throw new System.ArgumentNullException("id");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveRequest/{id}");
+            urlBuilder_.Append("api/LeaveRequest/{id}");
             urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = _httpClient;
@@ -888,7 +880,7 @@ namespace UdmClean.UI.Services.Base
                 throw new System.ArgumentNullException("id");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveRequest/{id}");
+            urlBuilder_.Append("api/LeaveRequest/{id}");
             urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = _httpClient;
@@ -920,7 +912,7 @@ namespace UdmClean.UI.Services.Base
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 204)
                         {
                             return;
                         }
@@ -960,7 +952,7 @@ namespace UdmClean.UI.Services.Base
                 throw new System.ArgumentNullException("id");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveRequest/changeApproval/{id}?");
+            urlBuilder_.Append("api/LeaveRequest/changeApproval/{id}?");
             urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
             if (approvalStatus != null)
             {
@@ -1035,7 +1027,7 @@ namespace UdmClean.UI.Services.Base
         public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<LeaveTypeDto>> LeaveTypeAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveType");
+            urlBuilder_.Append("api/LeaveType");
     
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1098,7 +1090,7 @@ namespace UdmClean.UI.Services.Base
     
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<int> LeaveTypePOSTAsync(CreateLeaveTypeDto body)
+        public System.Threading.Tasks.Task<BaseCommandResponse> LeaveTypePOSTAsync(CreateLeaveTypeDto body)
         {
             return LeaveTypePOSTAsync(body, System.Threading.CancellationToken.None);
         }
@@ -1106,10 +1098,10 @@ namespace UdmClean.UI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<int> LeaveTypePOSTAsync(CreateLeaveTypeDto body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<BaseCommandResponse> LeaveTypePOSTAsync(CreateLeaveTypeDto body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveType");
+            urlBuilder_.Append("api/LeaveType");
     
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1146,7 +1138,7 @@ namespace UdmClean.UI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<int>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<BaseCommandResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1186,7 +1178,7 @@ namespace UdmClean.UI.Services.Base
         public async System.Threading.Tasks.Task LeaveTypePUTAsync(LeaveTypeDto body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveType");
+            urlBuilder_.Append("api/LeaveType");
     
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1220,7 +1212,7 @@ namespace UdmClean.UI.Services.Base
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 204)
                         {
                             return;
                         }
@@ -1260,7 +1252,7 @@ namespace UdmClean.UI.Services.Base
                 throw new System.ArgumentNullException("id");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveType/{id}");
+            urlBuilder_.Append("api/LeaveType/{id}");
             urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = _httpClient;
@@ -1338,7 +1330,7 @@ namespace UdmClean.UI.Services.Base
                 throw new System.ArgumentNullException("id");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/LeaveType/{id}");
+            urlBuilder_.Append("api/LeaveType/{id}");
             urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = _httpClient;
@@ -1370,7 +1362,7 @@ namespace UdmClean.UI.Services.Base
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 204)
                         {
                             return;
                         }
@@ -1544,6 +1536,24 @@ namespace UdmClean.UI.Services.Base
     
         [Newtonsoft.Json.JsonProperty("period", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int Period { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class BaseCommandResponse 
+    {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int Id { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("success", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Success { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Message { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("errors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Errors { get; set; }
     
     
     }

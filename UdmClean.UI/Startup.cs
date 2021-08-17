@@ -27,8 +27,9 @@ namespace UdmClean.UI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpClient<IClient, Client>(cl => cl.BaseAddress = new Uri("https://localhost:44345"));
+            services.AddHttpClient<IClient, Client>(cl => cl.BaseAddress = new Uri("https://localhost:5001"));
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddScoped<ILeaveTypeService, LeaveTypeService>();
             services.AddSingleton<ILocalStorageService, LocalStorageService>();
 
             services.AddControllersWithViews();
