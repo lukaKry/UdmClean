@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using UdmClean.Application.DTOs.LeaveRequest;
 using UdmClean.Application.Features.LeaveRequests.Requests.Commands;
 using UdmClean.Application.Features.LeaveRequests.Requests.Queries;
+using UdmClean.Application.Responses;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -42,10 +43,10 @@ namespace UdmClean.Api.Controllers
 
         // POST api/<LeaveRequestController>
         [HttpPost]
-        public async Task<ActionResult<int>> Post([FromBody] CreateLeaveRequestDto createLeaveRequestDto)
+        public async Task<ActionResult<BaseCommandResponse>> Post([FromBody] CreateLeaveRequestDto createLeaveRequestDto)
         {
             var response = await _mediator.Send(new CreateLeaveRequestCommand() { LeaveRequestDto = createLeaveRequestDto });
-            return Ok(response.Id);
+            return Ok(response);
         }
 
         // PUT api/<LeaveRequestController>

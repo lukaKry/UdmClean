@@ -12,6 +12,7 @@ using UdmClean.Application.Exceptions;
 using UdmClean.Application.Features.LeaveRequests.Handlers.Commands;
 using UdmClean.Application.Features.LeaveRequests.Requests.Commands;
 using UdmClean.Application.Profiles;
+using UdmClean.Application.Responses;
 using UdmClean.Application.UnitTests.Mocks;
 using Xunit;
 
@@ -61,27 +62,21 @@ namespace UdmClean.Application.UnitTests.LeaveRequests.Commands
         {
             _updateLeaveRequestDto.LeaveTypeId = -1;
 
-            ValidationException exception = await Should.ThrowAsync<ValidationException>(async () =>
-            {
-                await _handler.Handle(new UpdateLeaveRequestCommand() { UpdateLeaveRequestDto = _updateLeaveRequestDto }, CancellationToken.None);
-            });
+            var response = await _handler.Handle(new UpdateLeaveRequestCommand() { UpdateLeaveRequestDto = _updateLeaveRequestDto }, CancellationToken.None);
 
-            exception.ShouldNotBeNull();
-            exception.Errors[0].ShouldContain("be greater than 0");
+            response.ShouldBeOfType<BaseCommandResponse>();
+            response.Success.ShouldBeFalse();
         }
 
         [Fact]
-        public async Task Handle_NonExistingLeaveTypeId_ThrowsValidationException()
+        public async Task Handle_NonExistingLeaveTypeId_ReturnsUnsuccessfulBaseCommandResponse()
         {
             _updateLeaveRequestDto.LeaveTypeId = 99;
 
-            ValidationException exception = await Should.ThrowAsync<ValidationException>(async () =>
-            {
-                await _handler.Handle(new UpdateLeaveRequestCommand() { UpdateLeaveRequestDto = _updateLeaveRequestDto }, CancellationToken.None);
-            });
+            var response = await _handler.Handle(new UpdateLeaveRequestCommand() { UpdateLeaveRequestDto = _updateLeaveRequestDto }, CancellationToken.None);
 
-            exception.ShouldNotBeNull();
-            exception.Errors[0].ShouldContain("does not exist");
+            response.ShouldBeOfType<BaseCommandResponse>();
+            response.Success.ShouldBeFalse();
 
             _updateLeaveRequestDto.LeaveTypeId = 2;
         }

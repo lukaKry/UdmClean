@@ -14,6 +14,7 @@ using UdmClean.Application.Features.LeaveAllocations.Requests.Commands;
 using UdmClean.Application.Features.LeaveTypes.Handlers.Commands;
 using UdmClean.Application.Features.LeaveTypes.Requests.Commands;
 using UdmClean.Application.Profiles;
+using UdmClean.Application.Responses;
 using UdmClean.Application.UnitTests.Mocks;
 using Xunit;
 
@@ -49,16 +50,14 @@ namespace UdmClean.Application.UnitTests.LeaveRequests.Commands
         {
             var leaveTypeCountBefore = _mockAllocationRepo.GetAllAsync().Result.Count;
 
-            NotFoundException ex = await Should.ThrowAsync<NotFoundException>(
-                async () => 
-                    await _handler.Handle(new DeleteLeaveAllocationCommand() { Id = -1 }, CancellationToken.None)
-                    );
-
-            ex.ShouldNotBeNull();
-
+            var response = await _handler.Handle(new DeleteLeaveAllocationCommand() { Id = -1 }, CancellationToken.None);
+                    
             var leaveType = await _mockAllocationRepo.GetAllAsync();
 
             leaveType.Count.ShouldBe(leaveTypeCountBefore);
+
+            response.ShouldBeOfType<BaseCommandResponse>();
+            response.Success.ShouldBeFalse();
         }
     }
 }

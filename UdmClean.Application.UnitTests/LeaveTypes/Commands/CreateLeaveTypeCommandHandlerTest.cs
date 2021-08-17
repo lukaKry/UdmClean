@@ -12,6 +12,7 @@ using UdmClean.Application.Exceptions;
 using UdmClean.Application.Features.LeaveTypes.Handlers.Commands;
 using UdmClean.Application.Features.LeaveTypes.Requests.Commands;
 using UdmClean.Application.Profiles;
+using UdmClean.Application.Responses;
 using UdmClean.Application.UnitTests.Mocks;
 using Xunit;
 
@@ -48,7 +49,8 @@ namespace UdmClean.Application.UnitTests.LeaveTypes.Commands
 
             var leaveTypes = await _mockRepo.GetAllAsync();
 
-            result.ShouldBeOfType<int>();
+            result.ShouldBeOfType<BaseCommandResponse>();
+            result.Success.ShouldBeTrue();
             leaveTypes.Count.ShouldBe(leaveTypesCountBefore + 1);
         }
 
@@ -59,14 +61,13 @@ namespace UdmClean.Application.UnitTests.LeaveTypes.Commands
             
             var leaveTypesBefore = await _mockRepo.GetAllAsync();
 
-            ValidationException ex = await Should.ThrowAsync<ValidationException> ( async () => 
-                    await _handler.Handle(new CreateLeaveTypeCommand() { LeaveTypeDto = _createLeaveTypeDto }, CancellationToken.None));
+            var response = await _handler.Handle(new CreateLeaveTypeCommand() { LeaveTypeDto = _createLeaveTypeDto }, CancellationToken.None);
 
             var leaveTypesAfter= await _mockRepo.GetAllAsync();
 
             leaveTypesAfter.Count.ShouldBe(leaveTypesBefore.Count);
 
-            ex.ShouldNotBeNull();
+            response.Success.ShouldBeFalse();
         }
     }
 }

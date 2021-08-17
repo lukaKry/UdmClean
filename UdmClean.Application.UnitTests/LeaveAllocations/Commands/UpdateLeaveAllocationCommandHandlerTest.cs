@@ -15,6 +15,7 @@ using UdmClean.Application.Features.LeaveAllocations.Requests.Commands;
 using UdmClean.Application.Features.LeaveTypes.Handlers.Commands;
 using UdmClean.Application.Features.LeaveTypes.Requests.Commands;
 using UdmClean.Application.Profiles;
+using UdmClean.Application.Responses;
 using UdmClean.Application.UnitTests.Mocks;
 using Xunit;
 
@@ -64,13 +65,10 @@ namespace UdmClean.Application.UnitTests.LeaveAllocations.Commands
         {
             _updateLeaveAllocationDto.Period = 0;
 
-            ValidationException exception = await Should.ThrowAsync<ValidationException>( async () => 
-            {
-                await _handler.Handle(new UpdateLeaveAllocationCommand() { LeaveAllocationDto = _updateLeaveAllocationDto }, CancellationToken.None);
-            });
+            var response = await _handler.Handle(new UpdateLeaveAllocationCommand() { LeaveAllocationDto = _updateLeaveAllocationDto }, CancellationToken.None);
 
-            exception.ShouldNotBeNull();
-            exception.Errors[0].ShouldContain("must be after");
+            response.ShouldBeOfType<BaseCommandResponse>();
+            response.Success.ShouldBeFalse();
 
             _updateLeaveAllocationDto.Period = DateTime.Now.Year;
         }
@@ -80,13 +78,10 @@ namespace UdmClean.Application.UnitTests.LeaveAllocations.Commands
         {
             _updateLeaveAllocationDto.LeaveTypeId = -1;
 
-            ValidationException exception = await Should.ThrowAsync<ValidationException>(async () =>
-            {
-                await _handler.Handle(new UpdateLeaveAllocationCommand() { LeaveAllocationDto = _updateLeaveAllocationDto }, CancellationToken.None);
-            });
+            var response = await _handler.Handle(new UpdateLeaveAllocationCommand() { LeaveAllocationDto = _updateLeaveAllocationDto }, CancellationToken.None);
 
-            exception.ShouldNotBeNull();
-            exception.Errors[0].ShouldContain("should be greater than 0");
+            response.ShouldBeOfType<BaseCommandResponse>();
+            response.Success.ShouldBeFalse();
         }
 
         [Fact]
@@ -94,13 +89,10 @@ namespace UdmClean.Application.UnitTests.LeaveAllocations.Commands
         {
             _updateLeaveAllocationDto.LeaveTypeId = 99;
 
-            ValidationException exception = await Should.ThrowAsync<ValidationException>(async () =>
-            {
-                await _handler.Handle(new UpdateLeaveAllocationCommand() { LeaveAllocationDto = _updateLeaveAllocationDto }, CancellationToken.None);
-            });
+            var response = await _handler.Handle(new UpdateLeaveAllocationCommand() { LeaveAllocationDto = _updateLeaveAllocationDto }, CancellationToken.None);
 
-            exception.ShouldNotBeNull();
-            exception.Errors[0].ShouldContain("does not exist");
+            response.ShouldBeOfType<BaseCommandResponse>();
+            response.Success.ShouldBeFalse();
 
             _updateLeaveAllocationDto.LeaveTypeId = 2;
         }
@@ -110,12 +102,10 @@ namespace UdmClean.Application.UnitTests.LeaveAllocations.Commands
         {
             _updateLeaveAllocationDto.NumberOfDays = -1;
 
-            ValidationException exception = await Should.ThrowAsync<ValidationException>(async () =>
-            {
-                await _handler.Handle(new UpdateLeaveAllocationCommand() { LeaveAllocationDto = _updateLeaveAllocationDto }, CancellationToken.None);
-            });
+            var response = await _handler.Handle(new UpdateLeaveAllocationCommand() { LeaveAllocationDto = _updateLeaveAllocationDto }, CancellationToken.None);
 
-            exception.ShouldNotBeNull();
+            response.ShouldBeOfType<BaseCommandResponse>();
+            response.Success.ShouldBeFalse();
             
             _updateLeaveAllocationDto.NumberOfDays = 1;
         }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using UdmClean.Application.DTOs.LeaveAllocation;
 using UdmClean.Application.Features.LeaveAllocations.Requests.Commands;
 using UdmClean.Application.Features.LeaveAllocations.Requests.Queries;
+using UdmClean.Application.Responses;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -43,7 +44,7 @@ namespace UdmClean.Api.Controllers
 
         // POST api/<LeaveAllocationController>
         [HttpPost]
-        public async Task<ActionResult<int>> Post([FromBody] CreateLeaveAllocationDto createLeaveAllocationDto)
+        public async Task<ActionResult<BaseCommandResponse>> Post([FromBody] CreateLeaveAllocationDto createLeaveAllocationDto)
         {
             var response = await _mediator.Send(new CreateLeaveAllocationCommand() { LeaveAllocationDto = createLeaveAllocationDto });
             return Ok(response);

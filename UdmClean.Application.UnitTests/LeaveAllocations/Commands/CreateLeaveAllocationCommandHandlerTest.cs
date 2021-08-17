@@ -15,6 +15,7 @@ using UdmClean.Application.Features.LeaveAllocations.Requests.Commands;
 using UdmClean.Application.Features.LeaveTypes.Handlers.Commands;
 using UdmClean.Application.Features.LeaveTypes.Requests.Commands;
 using UdmClean.Application.Profiles;
+using UdmClean.Application.Responses;
 using UdmClean.Application.UnitTests.Mocks;
 using Xunit;
 
@@ -54,7 +55,7 @@ namespace UdmClean.Application.UnitTests.LeaveAllocations.Commands
 
             var leaveAllocations = await _mockAllocationRepo.GetAllAsync();
 
-            result.ShouldBeOfType<int>();
+            result.ShouldBeOfType<BaseCommandResponse>();
             leaveAllocations.Count.ShouldBe(leaveAllocationsCountBefore + 1);
         }
 
@@ -65,14 +66,14 @@ namespace UdmClean.Application.UnitTests.LeaveAllocations.Commands
             
             var leaveAllocationssBefore = await _mockAllocationRepo.GetAllAsync();
 
-            ValidationException ex = await Should.ThrowAsync<ValidationException> ( async () => 
-                    await _handler.Handle(new CreateLeaveAllocationCommand() { LeaveAllocationDto = _createLeaveAllocationDto }, CancellationToken.None));
+            var response = await _handler.Handle(new CreateLeaveAllocationCommand() { LeaveAllocationDto = _createLeaveAllocationDto }, CancellationToken.None);
 
             var leaveAllocationsAfter= await _mockAllocationRepo.GetAllAsync();
 
             leaveAllocationsAfter.Count.ShouldBe(leaveAllocationssBefore.Count);
 
-            ex.ShouldNotBeNull();
+            response.ShouldBeOfType<BaseCommandResponse>();
+            response.Success.ShouldBeFalse();
         }
     }
 }

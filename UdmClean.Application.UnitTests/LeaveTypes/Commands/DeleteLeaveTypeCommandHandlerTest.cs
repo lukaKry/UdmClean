@@ -47,11 +47,9 @@ namespace UdmClean.Application.UnitTests.LeaveTypes.Commands
         {
             var leaveTypeCountBefore = _mockRepo.GetAllAsync().Result.Count;
 
-            NotFoundException ex = await Should.ThrowAsync<NotFoundException>(
-                async () => 
-                    await _handler.Handle(new DeleteLeaveTypeCommand() { Id = -1 }, CancellationToken.None));
+            var response = await _handler.Handle(new DeleteLeaveTypeCommand() { Id = -1 }, CancellationToken.None);
 
-            ex.ShouldNotBeNull();
+            response.Success.ShouldBeFalse();
 
             var leaveType = await _mockRepo.GetAllAsync();
 
