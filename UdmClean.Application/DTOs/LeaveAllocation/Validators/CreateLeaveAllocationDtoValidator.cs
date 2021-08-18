@@ -13,7 +13,15 @@ namespace UdmClean.Application.DTOs.LeaveAllocation.Validators
         public CreateLeaveAllocationDtoValidator(ILeaveTypeRepository leaveTypeRepository)
         {
             _leaveTypeRepository = leaveTypeRepository;
-            Include(new ILeaveAllocationDtoValidator(_leaveTypeRepository));
+
+            RuleFor(p => p.LeaveTypeId)
+                .GreaterThan(0)
+                .MustAsync(async (id, token) =>
+               {
+                   var leaveTypeExists = await _leaveTypeRepository.ExistsAsync(id);
+                   return leaveTypeExists;
+               })
+                .WithMessage("{PropertyName} does not exist.");
         }
     }
 }

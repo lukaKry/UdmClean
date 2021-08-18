@@ -29,6 +29,7 @@ namespace UdmClean.Identity
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<UdmCleanIdentityDbContext>().AddDefaultTokenProviders();
 
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddAuthentication(options =>
             {

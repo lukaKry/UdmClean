@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UdmClean.UI.Services.Base;
 
 namespace UdmClean.UI.Contracts
 {
-    interface ILeaveAllocationService
+    public interface ILeaveAllocationService
     {
+        Task<Response<int>> CreateLeaveAllocations(int leaveTypeId);
     }
 }

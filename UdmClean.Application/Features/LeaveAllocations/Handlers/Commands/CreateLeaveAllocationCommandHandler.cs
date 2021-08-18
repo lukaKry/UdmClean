@@ -12,21 +12,29 @@ using UdmClean.Application.Contracts.Persistance;
 using UdmClean.Domain;
 using UdmClean.Application.Responses;
 using System.Linq;
+using UdmClean.Application.Contracts.Identity;
 
 namespace UdmClean.Application.Features.LeaveAllocations.Handlers.Commands
 {
     public class CreateLeaveAllocationCommandHandler : IRequestHandler<CreateLeaveAllocationCommand, BaseCommandResponse>
     {
         private readonly ILeaveAllocationRepository _leaveAllocationRepository;
-        private readonly IMapper _mapper;
         private readonly ILeaveTypeRepository _leaveTypeRepository;
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public CreateLeaveAllocationCommandHandler(ILeaveAllocationRepository leaveAllocationRepository, IMapper mapper, ILeaveTypeRepository leaveTypeRepository)
+        public CreateLeaveAllocationCommandHandler(
+            ILeaveAllocationRepository leaveAllocationRepository,
+            ILeaveTypeRepository leaveTypeRepository,
+            IUserService userService,
+            IMapper mapper)
         {
             _leaveAllocationRepository = leaveAllocationRepository;
             _leaveTypeRepository = leaveTypeRepository;
+            this._userService = userService;
             _mapper = mapper;
         }
+
         public async Task<BaseCommandResponse> Handle(CreateLeaveAllocationCommand request, CancellationToken cancellationToken)
         {
             var response = new BaseCommandResponse();
@@ -36,18 +44,35 @@ namespace UdmClean.Application.Features.LeaveAllocations.Handlers.Commands
             if (validationResult.IsValid == false)
             {
                 response.Success = false;
-                response.Message = "Data validation error. Check errors for details.";
+                response.Message = "Allocations Failed";
                 response.Errors = validationResult.Errors.Select(q => q.ErrorMessage).ToList();
             }
             else
             {
-                var leaveAllocation = _mapper.Map<LeaveAllocation>(request.LeaveAllocationDto);
-                leaveAllocation = await _leaveAllocationRepository.AddAsync(leaveAllocation);
+                var leaveType = await _leaveTypeRepository.GetAsync(request.LeaveAllocationDto.LeaveTypeId);
+                var employees = await _userService.GetEmployees();
+                var period = DateTime.Now.Year;
+                var allocations = new List<LeaveAllocation>();
+                foreach (var emp in employees)
+                {
+                    if (await _leaveAllocationRepository.AllocationExists(emp.Id, leaveType.Id, period))
+                        continue;
+                    allocations.Add(new LeaveAllocation
+                    {
+                        EmployeeId = emp.Id,
+                        LeaveTypeId = leaveType.Id,
+                        NumberOfDays = leaveType.DefaultDays,
+                        Period = period
+                    });
+                }
+
+                await _leaveAllocationRepository.AddAllocations(allocations);
 
                 response.Success = true;
-                response.Message = "Item Created successfully.";
-                response.Id = leaveAllocation.Id;
+                response.Message = "Allocations Successful";
             }
+
+
             return response;
         }
     }

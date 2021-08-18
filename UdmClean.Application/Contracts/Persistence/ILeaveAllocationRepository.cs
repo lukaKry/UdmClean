@@ -10,5 +10,8 @@ namespace UdmClean.Application.Contracts.Persistance
     {
         Task<LeaveAllocation> GetLeaveAllocationWithDetails(int id);
         Task<List<LeaveAllocation>> GetLeaveAllocationsWithDetails();
+
+        Task<bool> AllocationExists(string userId, int leaveTypeId, int period);
+        Task AddAllocations(List<LeaveAllocation> allocations);
     }
 }
