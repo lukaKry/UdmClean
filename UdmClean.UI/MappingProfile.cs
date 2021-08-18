@@ -15,6 +15,8 @@ namespace UdmClean.UI
             CreateMap<CreateLeaveTypeDto, CreateLeaveTypeVM>().ReverseMap();
 
             CreateMap<LeaveTypeDto, LeaveTypeVM>().ReverseMap();
+
+            CreateMap<RegistrationRequest, RegisterVM>().ReverseMap();
         }
     }
 }

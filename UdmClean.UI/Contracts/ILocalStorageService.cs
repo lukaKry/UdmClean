@@ -10,6 +10,6 @@ namespace UdmClean.UI.Contracts
         void ClearStorage(List<string> keys);
         bool Exists(string key);
         T GetStorageValue<T>(string key);
-        void SetSTorageValue<T>(string key, T value);
+        void SetStorageValue<T>(string key, T value);
     }
 }

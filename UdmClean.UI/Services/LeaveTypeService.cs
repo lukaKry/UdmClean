@@ -28,6 +28,7 @@ namespace UdmClean.UI.Services
             {
                 var response = new Response<int>();
                 CreateLeaveTypeDto createLeaveTypeDto = _mapper.Map<CreateLeaveTypeDto>(leaveType);
+                AddBearerToken();
                 var apiResponse = await _client.LeaveTypePOSTAsync(createLeaveTypeDto);
                 if (apiResponse.Success)
                 {
@@ -53,6 +54,7 @@ namespace UdmClean.UI.Services
         {
             try
             {
+                AddBearerToken();
                 await _client.LeaveTypeDELETEAsync(id);
                 return new Response<int>() { Success = true };
             }
@@ -64,12 +66,14 @@ namespace UdmClean.UI.Services
 
         public async Task<LeaveTypeVM> GetLeaveTypeDetails(int id)
         {
+            AddBearerToken();
             var leaveType = await _client.LeaveTypeGETAsync(id);
             return _mapper.Map<LeaveTypeVM>(leaveType);
         }
 
         public async Task<List<LeaveTypeVM>> GetLeaveTypes()
         {
+            AddBearerToken();
             var leaveTypes = await _client.LeaveTypeAllAsync();
             return _mapper.Map<List<LeaveTypeVM>>(leaveTypes);
         }
@@ -79,6 +83,7 @@ namespace UdmClean.UI.Services
             try
             {
                 LeaveTypeDto leaveTypeDto = _mapper.Map<LeaveTypeDto>(leaveType);
+                AddBearerToken();
                 await _client.LeaveTypePUTAsync(leaveTypeDto);
                 return new Response<int>() { Success = true };
             }

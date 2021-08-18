@@ -16,6 +16,7 @@ namespace Udm.Clean.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class LeaveTypeController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -27,7 +28,6 @@ namespace Udm.Clean.Api.Controllers
 
         // GET: api/<LeaveTypeController>
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<List<LeaveTypeDto>>> Get()
         {
             var leaveTypes = await _mediator.Send(new GetLeaveTypeListRequest());

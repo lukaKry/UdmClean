@@ -40,7 +40,7 @@ namespace UdmClean.UI.Services
             return _storage.Get<T>(key);
         }
 
-        public void SetSTorageValue<T>(string key, T value)
+        public void SetStorageValue<T>(string key, T value)
         {
             _storage.Store(key, value);
             _storage.Persist();
