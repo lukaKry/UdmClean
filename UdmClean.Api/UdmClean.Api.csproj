@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UdmClean.Application\UdmClean.Application.csproj" />
+    <ProjectReference Include="..\UdmClean.Identity\UdmClean.Identity.csproj" />
     <ProjectReference Include="..\UdmClean.Infrastructure\UdmClean.Infrastructure.csproj" />
     <ProjectReference Include="..\UdmClean.Persistence\UdmClean.Persistence.csproj" />
   </ItemGroup>
