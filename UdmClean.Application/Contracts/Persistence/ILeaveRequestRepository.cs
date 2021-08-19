@@ -10,6 +10,7 @@ namespace UdmClean.Application.Contracts.Persistance
     {
         Task<LeaveRequest> GetLeaveRequestWithDetailsAsync(int id);
         Task<List<LeaveRequest>> GetLeaveRequestsWithDetailsAsync();
+        Task<List<LeaveRequest>> GetLeaveRequestsWithDetailsAsync(string id);
         Task ChangeApprovalStatus(LeaveRequest leaveRequest, bool? approved);
     }
 }

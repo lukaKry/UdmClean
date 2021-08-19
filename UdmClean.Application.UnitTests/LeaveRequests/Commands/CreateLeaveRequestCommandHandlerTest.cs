@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using Shouldly;
 using System;
@@ -9,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UdmClean.Application.Contracts.Infrastructure;
 using UdmClean.Application.Contracts.Persistance;
+using UdmClean.Application.Contracts.Persistence;
 using UdmClean.Application.DTOs.LeaveRequest;
 using UdmClean.Application.Features.LeaveRequests.Handlers.Commands;
 using UdmClean.Application.Features.LeaveRequests.Requests.Commands;
@@ -22,15 +24,24 @@ namespace UdmClean.Application.UnitTests.LeaveRequests.Commands
     public class CreateLeaveRequestCommandHandlerTest
     {
         private readonly IMapper _mapper;
-        private readonly ILeaveRequestRepository _mockRequestRepo;
-        private readonly CreateLeaveRequestDto _createLeaveRequestDto;
+        private readonly IUnitOfWork _mockUnitOfWork;
+        private readonly IHttpContextAccessor _mockAccessor;
+        private readonly IEmailSender _mockEmailSender;
         private readonly CreateLeaveRequestCommandHandler _handler;
+        private CreateLeaveRequestDto _createLeaveRequestDto;
         public CreateLeaveRequestCommandHandlerTest()
         {
-            _mockRequestRepo = MockLeaveRequestRepository.GetLeaveRequestRepository().Object;
-
             var mapperConfig = new MapperConfiguration(p => p.AddProfile<MappingProfile>());
             _mapper = mapperConfig.CreateMapper();
+
+            _mockUnitOfWork = MockUnitOfWork.GetUnitOfWork().Object;
+
+            _mockAccessor = MockHttpContextAccessor.GetHttpContextAccessor().Object;
+
+            _mockEmailSender = new Mock<IEmailSender>().Object;
+
+            _handler = new CreateLeaveRequestCommandHandler(_mockUnitOfWork, _mapper, _mockAccessor, _mockEmailSender);
+
             _createLeaveRequestDto = new CreateLeaveRequestDto()
             {
                 StartDate = DateTime.Now - new TimeSpan(2, 0, 0, 0, 0),
@@ -38,14 +49,6 @@ namespace UdmClean.Application.UnitTests.LeaveRequests.Commands
                 LeaveTypeId = 1,
                 RequestComments = "create"
             };
-
-            var mockTypeRepository = MockLeaveTypeRepository.GetLeaveTypeRepository().Object;
-
-            var sender = new Mock<IEmailSender>().Object;
-
-
-            _handler = new CreateLeaveRequestCommandHandler(_mockRequestRepo, mockTypeRepository, sender, _mapper);
-
         }
 
         [Fact]

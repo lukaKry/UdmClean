@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Shouldly;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using UdmClean.Application.Contracts.Persistance;
+using UdmClean.Application.Contracts.Identity;
+using UdmClean.Application.Contracts.Persistence;
 using UdmClean.Application.DTOs.LeaveAllocation;
 using UdmClean.Application.Features.LeaveAllocations.Handlers.Queries;
 using UdmClean.Application.Features.LeaveAllocations.Requests.Queries;
@@ -18,20 +17,26 @@ namespace UdmClean.Application.UnitTests.LeaveAllocations.Queries
 {
     public class GetLeaveRequestListRequestHandlerTest
     {
+        private readonly IUnitOfWork _mockUnitOfWork;
         private readonly IMapper _mapper;
-        private readonly ILeaveAllocationRepository _mockRepo;
+        private readonly IUserService _mockUserService;
+        private readonly IHttpContextAccessor _mockAccessor;
         public GetLeaveRequestListRequestHandlerTest()
         {
-            _mockRepo = MockLeaveAllocationRepository.GetLeaveAllocationRepository().Object;
+            _mockUnitOfWork = MockUnitOfWork.GetUnitOfWork().Object;
 
             var mapperConfiguration = new MapperConfiguration(p => p.AddProfile<MappingProfile>());
             _mapper = mapperConfiguration.CreateMapper();
+
+            _mockUserService = MockUserService.GetUserService().Object;
+
+            _mockAccessor = MockHttpContextAccessor.GetHttpContextAccessor().Object;
         }
 
         [Fact]
         public async Task Handle_WhenCalled_ReturnListOfLeaveAllocationTypeDtoObjects()
         {
-            var handler = new GetLeaveAllocationListRequestHandler(_mockRepo, _mapper);
+            var handler = new GetLeaveAllocationListRequestHandler(_mockUnitOfWork, _mapper, _mockAccessor, _mockUserService);
 
             var result = await handler.Handle(new GetLeaveAllocationListRequest(), CancellationToken.None);
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Moq;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UdmClean.Application.Contracts.Persistance;
+using UdmClean.Application.Contracts.Persistence;
 using UdmClean.Application.DTOs.LeaveType;
 using UdmClean.Application.Exceptions;
 using UdmClean.Application.Features.LeaveTypes.Handlers.Commands;
@@ -21,12 +23,12 @@ namespace UdmClean.Application.UnitTests.LeaveTypes.Commands
     public class CreateLeaveAllocationCommandHandlerTest
     {
         private readonly IMapper _mapper;
-        private readonly ILeaveTypeRepository _mockRepo;
         private readonly CreateLeaveTypeDto _createLeaveTypeDto;
         private readonly CreateLeaveTypeCommandHandler _handler;
+        private readonly Mock<IUnitOfWork> _mockUow;
         public CreateLeaveAllocationCommandHandlerTest()
         {
-            _mockRepo = MockLeaveTypeRepository.GetLeaveTypeRepository().Object;
+            _mockUow = MockUnitOfWork.GetUnitOfWork();
 
             var mapperConfig = new MapperConfiguration(p => p.AddProfile<MappingProfile>());
             _mapper = mapperConfig.CreateMapper();
@@ -36,18 +38,18 @@ namespace UdmClean.Application.UnitTests.LeaveTypes.Commands
                 DefaultDays = 1
             };
 
-            _handler = new CreateLeaveTypeCommandHandler(_mockRepo, _mapper);
+            _handler = new CreateLeaveTypeCommandHandler(_mockUow.Object, _mapper);
 
         }
 
         [Fact]
         public async Task Handle_ValidRequestData_ReturnsIdOfNewObject()
         {
-            var leaveTypesCountBefore = _mockRepo.GetAllAsync().Result.Count;
+            var leaveTypesCountBefore = _mockUow.Object.LeaveTypeRepository.GetAllAsync().Result.Count;
 
             var result = await _handler.Handle(new CreateLeaveTypeCommand() { LeaveTypeDto = _createLeaveTypeDto }, CancellationToken.None);
 
-            var leaveTypes = await _mockRepo.GetAllAsync();
+            var leaveTypes = await _mockUow.Object.LeaveTypeRepository.GetAllAsync();
 
             result.ShouldBeOfType<BaseCommandResponse>();
             result.Success.ShouldBeTrue();
@@ -59,11 +61,11 @@ namespace UdmClean.Application.UnitTests.LeaveTypes.Commands
         {
             _createLeaveTypeDto.DefaultDays = -1;
             
-            var leaveTypesBefore = await _mockRepo.GetAllAsync();
+            var leaveTypesBefore = await _mockUow.Object.LeaveTypeRepository.GetAllAsync();
 
             var response = await _handler.Handle(new CreateLeaveTypeCommand() { LeaveTypeDto = _createLeaveTypeDto }, CancellationToken.None);
 
-            var leaveTypesAfter= await _mockRepo.GetAllAsync();
+            var leaveTypesAfter= await _mockUow.Object.LeaveTypeRepository.GetAllAsync();
 
             leaveTypesAfter.Count.ShouldBe(leaveTypesBefore.Count);
 

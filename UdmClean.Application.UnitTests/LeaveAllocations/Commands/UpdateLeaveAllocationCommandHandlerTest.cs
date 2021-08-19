@@ -1,19 +1,12 @@
 ﻿using AutoMapper;
 using Shouldly;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using UdmClean.Application.Contracts.Persistance;
+using UdmClean.Application.Contracts.Persistence;
 using UdmClean.Application.DTOs.LeaveAllocation;
-using UdmClean.Application.DTOs.LeaveType;
-using UdmClean.Application.Exceptions;
 using UdmClean.Application.Features.LeaveAllocations.Handlers.Commands;
 using UdmClean.Application.Features.LeaveAllocations.Requests.Commands;
-using UdmClean.Application.Features.LeaveTypes.Handlers.Commands;
-using UdmClean.Application.Features.LeaveTypes.Requests.Commands;
 using UdmClean.Application.Profiles;
 using UdmClean.Application.Responses;
 using UdmClean.Application.UnitTests.Mocks;
@@ -23,17 +16,19 @@ namespace UdmClean.Application.UnitTests.LeaveAllocations.Commands
 {
     public class UpdateLeaveRequestCommandHandlerTest
     {
+        private readonly IUnitOfWork _mockUnitOfWork;
         private readonly IMapper _mapper;
-        private readonly ILeaveAllocationRepository _mockLeaveAllocationRepo;
         private readonly UpdateLeaveAllocationCommandHandler _handler;
         private UpdateLeaveAllocationDto _updateLeaveAllocationDto;
 
         public UpdateLeaveRequestCommandHandlerTest()
         {
+            _mockUnitOfWork = MockUnitOfWork.GetUnitOfWork().Object;
+
             var mapperConfig = new MapperConfiguration( c => c.AddProfile<MappingProfile>());
             _mapper = mapperConfig.CreateMapper();
 
-            _mockLeaveAllocationRepo = MockLeaveAllocationRepository.GetLeaveAllocationRepository().Object;
+            _handler = new UpdateLeaveAllocationCommandHandler(_mockUnitOfWork, _mapper);
 
             _updateLeaveAllocationDto = new UpdateLeaveAllocationDto()
             {
@@ -42,10 +37,6 @@ namespace UdmClean.Application.UnitTests.LeaveAllocations.Commands
                 LeaveTypeId = 2,
                 Period = DateTime.Now.Year
             };
-
-            var mockLeaveTypeRepo = MockLeaveTypeRepository.GetLeaveTypeRepository().Object;
-
-            _handler = new UpdateLeaveAllocationCommandHandler(_mockLeaveAllocationRepo, _mapper, mockLeaveTypeRepo);
         }
 
         [Fact]
@@ -53,7 +44,7 @@ namespace UdmClean.Application.UnitTests.LeaveAllocations.Commands
         {
             await _handler.Handle(new UpdateLeaveAllocationCommand() { LeaveAllocationDto = _updateLeaveAllocationDto }, CancellationToken.None);
 
-            var result = await _mockLeaveAllocationRepo.GetAsync(1);
+            var result = await _mockUnitOfWork.LeaveAllocationRepository.GetAsync(1);
 
             result.NumberOfDays.ShouldBe(1);
             result.LeaveTypeId.ShouldBe(2);

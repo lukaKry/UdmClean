@@ -11,25 +11,26 @@ using UdmClean.Application.Features.LeaveAllocations.Requests.Commands;
 using UdmClean.Application.Contracts.Persistance;
 using UdmClean.Application.Responses;
 using System.Linq;
+using UdmClean.Application.Contracts.Persistence;
 
 namespace UdmClean.Application.Features.LeaveAllocations.Handlers.Commands
 {
     public class UpdateLeaveAllocationCommandHandler : IRequestHandler<UpdateLeaveAllocationCommand, BaseCommandResponse>
     {
-        private readonly ILeaveAllocationRepository _leaveAllocationRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly ILeaveTypeRepository _leaveTypeRepository;
 
-        public UpdateLeaveAllocationCommandHandler(ILeaveAllocationRepository leaveAllocationRepository, IMapper mapper, ILeaveTypeRepository leaveTypeRepository)
+        public UpdateLeaveAllocationCommandHandler(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper)
         {
-            _leaveAllocationRepository = leaveAllocationRepository;
-            _leaveTypeRepository = leaveTypeRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
         public async Task<BaseCommandResponse> Handle(UpdateLeaveAllocationCommand request, CancellationToken cancellationToken)
         {
             var response = new BaseCommandResponse();
-            var validator = new UpdateLeaveAllocationDtoValidator(_leaveTypeRepository, _leaveAllocationRepository);
+            var validator = new UpdateLeaveAllocationDtoValidator(_unitOfWork.LeaveTypeRepository, _unitOfWork.LeaveAllocationRepository);
             var validationResult = await validator.ValidateAsync(request.LeaveAllocationDto);
 
             if (validationResult.IsValid == false)
@@ -40,9 +41,10 @@ namespace UdmClean.Application.Features.LeaveAllocations.Handlers.Commands
             }
             else
             {
-                var leaveAllocation = await _leaveAllocationRepository.GetAsync(request.LeaveAllocationDto.Id);
+                var leaveAllocation = await _unitOfWork.LeaveAllocationRepository.GetAsync(request.LeaveAllocationDto.Id);
                 _mapper.Map(request.LeaveAllocationDto, leaveAllocation);
-                await _leaveAllocationRepository.UpdateAsync(leaveAllocation);
+                await _unitOfWork.LeaveAllocationRepository.UpdateAsync(leaveAllocation);
+                await _unitOfWork.Save();
 
                 response.Success = true;
                 response.Message = "Update made successfully.";

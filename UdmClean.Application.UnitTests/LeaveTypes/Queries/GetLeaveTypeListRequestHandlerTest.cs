@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UdmClean.Application.Contracts.Persistance;
+using UdmClean.Application.Contracts.Persistence;
 using UdmClean.Application.DTOs.LeaveType;
 using UdmClean.Application.Features.LeaveTypes.Handlers.Queries;
 using UdmClean.Application.Features.LeaveTypes.Requests.Queries;
@@ -19,10 +20,10 @@ namespace UdmClean.Application.UnitTests.LeaveTypes.Queries
     public class GetLeaveTypeListRequestHandlerTest
     {
         private readonly IMapper _mapper;
-        private readonly ILeaveTypeRepository _mockRepo;
+        private readonly IUnitOfWork _mockUow;
         public GetLeaveTypeListRequestHandlerTest()
         {
-            _mockRepo = MockLeaveTypeRepository.GetLeaveTypeRepository().Object;
+            _mockUow = MockUnitOfWork.GetUnitOfWork().Object;
 
             var mapperConfiguration = new MapperConfiguration(p => p.AddProfile<MappingProfile>());
             _mapper = mapperConfiguration.CreateMapper();
@@ -31,7 +32,7 @@ namespace UdmClean.Application.UnitTests.LeaveTypes.Queries
         [Fact]
         public async Task Handle_WhenCalled_ReturnListOfLeaveTypeDtoObjects()
         {
-            var handler = new GetLeaveTypeListRequestHandler(_mockRepo, _mapper);
+            var handler = new GetLeaveTypeListRequestHandler(_mockUow, _mapper);
 
             var result = await handler.Handle(new GetLeaveTypeListRequest(), CancellationToken.None);
 

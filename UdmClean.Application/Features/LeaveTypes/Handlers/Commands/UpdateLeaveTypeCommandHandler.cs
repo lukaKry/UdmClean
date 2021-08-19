@@ -12,17 +12,20 @@ using UdmClean.Application.Features.LeaveTypes.Requests.Commands;
 using UdmClean.Application.Contracts.Persistance;
 using UdmClean.Application.Responses;
 using System.Linq;
+using UdmClean.Application.Contracts.Persistence;
 
 namespace UdmClean.Application.Features.LeaveTypes.Handlers.Commands
 {
     public class UpdateLeaveTypeCommandHandler : IRequestHandler<UpdateLeaveTypeCommand, BaseCommandResponse>
     {
-        private readonly ILeaveTypeRepository _leaveTypeRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public UpdateLeaveTypeCommandHandler(ILeaveTypeRepository leaveTypeRepository, IMapper mapper)
+        public UpdateLeaveTypeCommandHandler(
+            IUnitOfWork unitOfWork,
+            IMapper mapper)
         {
-            _leaveTypeRepository = leaveTypeRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
         public async Task<BaseCommandResponse> Handle(UpdateLeaveTypeCommand request, CancellationToken cancellationToken)
@@ -39,9 +42,10 @@ namespace UdmClean.Application.Features.LeaveTypes.Handlers.Commands
             }
             else
             {
-                var leaveType = await _leaveTypeRepository.GetAsync(request.LeaveTypeDto.Id);
+                var leaveType = await _unitOfWork.LeaveTypeRepository.GetAsync(request.LeaveTypeDto.Id);
                 _mapper.Map(request.LeaveTypeDto, leaveType);
-                await _leaveTypeRepository.UpdateAsync(leaveType);
+                await _unitOfWork.LeaveTypeRepository.UpdateAsync(leaveType);
+                await _unitOfWork.Save();
 
                 response.Success = true;
                 response.Message = "Update made successfully.";

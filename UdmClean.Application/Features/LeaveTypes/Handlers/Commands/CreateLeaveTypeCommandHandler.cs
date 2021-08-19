@@ -12,17 +12,18 @@ using UdmClean.Application.Contracts.Persistance;
 using UdmClean.Domain;
 using UdmClean.Application.Responses;
 using System.Linq;
+using UdmClean.Application.Contracts.Persistence;
 
 namespace UdmClean.Application.Features.LeaveTypes.Handlers.Commands
 {
     public class CreateLeaveTypeCommandHandler : IRequestHandler<CreateLeaveTypeCommand, BaseCommandResponse>
     {
-        private readonly ILeaveTypeRepository _leaveTypeRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public CreateLeaveTypeCommandHandler(ILeaveTypeRepository leaveTypeRepository, IMapper mapper)
+        public CreateLeaveTypeCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _leaveTypeRepository = leaveTypeRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
         public async Task<BaseCommandResponse> Handle(CreateLeaveTypeCommand request, CancellationToken cancellationToken)
@@ -41,7 +42,8 @@ namespace UdmClean.Application.Features.LeaveTypes.Handlers.Commands
             else
             {
                 var leaveType = _mapper.Map<LeaveType>(request.LeaveTypeDto);
-                leaveType = await _leaveTypeRepository.AddAsync(leaveType);
+                leaveType = await _unitOfWork.LeaveTypeRepository.AddAsync(leaveType);
+                await _unitOfWork.Save();
 
                 response.Success = true;
                 response.Message = "Creation ended successfully.";

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UdmClean.Application.Contracts.Persistance;
+using UdmClean.Application.Contracts.Persistence;
 using UdmClean.Application.DTOs.LeaveType;
 using UdmClean.Application.Features.LeaveTypes.Handlers.Commands;
 using UdmClean.Application.Features.LeaveTypes.Requests.Commands;
@@ -19,16 +20,17 @@ namespace UdmClean.Application.UnitTests.LeaveTypes.Commands
     public class UpdateLeaveAllocationCommandHandlerTest
     {
         private readonly IMapper _mapper;
-        private readonly ILeaveTypeRepository _mockRepo;
+        private readonly IUnitOfWork _mockUow;
         private readonly UpdateLeaveTypeCommandHandler _handler;
         private LeaveTypeDto _leaveTypeDto;
 
         public UpdateLeaveAllocationCommandHandlerTest()
         {
+            _mockUow = MockUnitOfWork.GetUnitOfWork().Object;
+
             var mapperConfig = new MapperConfiguration( c => c.AddProfile<MappingProfile>());
             _mapper = mapperConfig.CreateMapper();
 
-            _mockRepo = MockLeaveTypeRepository.GetLeaveTypeRepository().Object;
 
             _leaveTypeDto = new LeaveTypeDto()
             {
@@ -37,7 +39,7 @@ namespace UdmClean.Application.UnitTests.LeaveTypes.Commands
                 DefaultDays = 1
             };
 
-            _handler = new UpdateLeaveTypeCommandHandler(_mockRepo, _mapper);
+            _handler = new UpdateLeaveTypeCommandHandler(_mockUow, _mapper);
         }
 
         [Fact]
@@ -45,7 +47,7 @@ namespace UdmClean.Application.UnitTests.LeaveTypes.Commands
         {
             await _handler.Handle(new UpdateLeaveTypeCommand() { LeaveTypeDto = _leaveTypeDto }, CancellationToken.None);
 
-            var result = await _mockRepo.GetAsync(1);
+            var result = await _mockUow.LeaveTypeRepository.GetAsync(1);
 
             result.Name.ShouldBe("Name");
             result.DefaultDays.ShouldBe(1);

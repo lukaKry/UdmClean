@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using UdmClean.Application.Contracts.Persistance;
+using UdmClean.Application.Contracts.Persistence;
 using UdmClean.Application.DTOs.LeaveAllocation;
 using UdmClean.Application.Features.LeaveAllocations.Handlers.Queries;
 using UdmClean.Application.Features.LeaveAllocations.Requests.Queries;
@@ -18,11 +14,11 @@ namespace UdmClean.Application.UnitTests.LeaveAllocations.Queries
 {
     public class GetLeaveRequestDetailRequestHandlerTests
     {
+        private readonly IUnitOfWork _mockUnitOfWork;
         private readonly IMapper _mapper;
-        private readonly ILeaveAllocationRepository _mockRepo;
         public GetLeaveRequestDetailRequestHandlerTests()
         {
-            _mockRepo = MockLeaveAllocationRepository.GetLeaveAllocationRepository().Object;
+            _mockUnitOfWork = MockUnitOfWork.GetUnitOfWork().Object;
 
             var mapperConfiguration = new MapperConfiguration(p => p.AddProfile<MappingProfile>());
             _mapper = mapperConfiguration.CreateMapper();
@@ -31,7 +27,7 @@ namespace UdmClean.Application.UnitTests.LeaveAllocations.Queries
         [Fact]
         public async Task Handle_CalledWithExistingId_ReturnsLeaveAllocationObject()
         {
-            var handler = new GetLeaveAllocationDetailRequestHandler(_mockRepo, _mapper);
+            var handler = new GetLeaveAllocationDetailRequestHandler(_mockUnitOfWork, _mapper);
 
             var result = await handler.Handle(new GetLeaveAllocationDetailRequest() { Id = 1 }, CancellationToken.None);
 

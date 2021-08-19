@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UdmClean.Application.Contracts.Persistance;
+using UdmClean.Application.Contracts.Persistence;
 using UdmClean.Persistence.Repositories;
 
 namespace UdmClean.Persistence
@@ -18,6 +19,8 @@ namespace UdmClean.Persistence
                     configuration.GetConnectionString("UdmCleanConnectionString")));
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
             services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
             services.AddScoped<ILeaveAllocationRepository, LeaveAllocationRepository>();

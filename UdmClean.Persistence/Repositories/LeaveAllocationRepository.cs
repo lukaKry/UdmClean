@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UdmClean.Application.Contracts.Persistance;
@@ -20,7 +21,6 @@ namespace UdmClean.Persistence.Repositories
         public async Task AddAllocations(List<LeaveAllocation> allocations)
         {
             await _dbContext.AddRangeAsync(allocations);
-            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> AllocationExists(string userId, int leaveTypeId, int period)
@@ -33,9 +33,22 @@ namespace UdmClean.Persistence.Repositories
             return await _dbContext.LeaveAllocations.Include(p => p.LeaveType).ToListAsync();
         }
 
+        public async Task<List<LeaveAllocation>> GetLeaveAllocationsWithDetailsAsync(string userId)
+        {
+            var leaveAllocations = await _dbContext.LeaveAllocations.Where(q => q.EmployeeId == userId)
+                .Include(q => q.LeaveType)
+                .ToListAsync();
+            return leaveAllocations;
+        }
+
         public async Task<LeaveAllocation> GetLeaveAllocationWithDetails(int id)
         {
             return await _dbContext.LeaveAllocations.Include(p => p.LeaveType).FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task<LeaveAllocation> GetUserAllocations(string userId, int leaveTypeId)
+        {
+            return await _dbContext.LeaveAllocations.FirstOrDefaultAsync(q => q.EmployeeId == userId && q.LeaveTypeId == leaveTypeId);
         }
     }
 }

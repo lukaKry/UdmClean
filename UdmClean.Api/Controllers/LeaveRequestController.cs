@@ -26,9 +26,9 @@ namespace UdmClean.Api.Controllers
 
         // GET: api/<LeaveRequestController>
         [HttpGet]
-        public async Task<ActionResult<List<LeaveRequestListDto>>> Get()
+        public async Task<ActionResult<List<LeaveRequestListDto>>> Get(bool isLoggedInUser = false)
         {
-            var leaveRequests = await _mediator.Send(new GetLeaveRequestListRequest());
+            var leaveRequests = await _mediator.Send(new GetLeaveRequestListRequest() { IsLoggedInUser = isLoggedInUser });
             return Ok(leaveRequests);
         }
 
@@ -59,17 +59,11 @@ namespace UdmClean.Api.Controllers
 
         // PUT api/<LeaveRequestController>/changeApproval/5
         [HttpPut("changeApproval/{id}")]
-        public async Task<ActionResult> ChangeApproval(int id, bool approvalStatus)
+        public async Task<ActionResult> ChangeApproval(int id, [FromBody] ChangeLeaveRequestAprovalDto changeLeaveRequestApproval)
         {
-            await _mediator.Send(new UpdateLeaveRequestCommand() 
-            { 
-                ChangeLeaveRequestAprovalDto = new ChangeLeaveRequestAprovalDto() 
-                { 
-                    Id = id, Approved = approvalStatus 
-                } 
-            });
-
-            return NoContent();
+            var command = new UpdateLeaveRequestCommand { Id = id, ChangeLeaveRequestAprovalDto = changeLeaveRequestApproval };
+            await _mediator.Send(command);
+            return NoContent(); ;
         }
 
         // DELETE api/<LeaveRequestController>/5

@@ -7,9 +7,10 @@ using UdmClean.Application.Responses;
 
 namespace UdmClean.Application.Features.LeaveRequests.Requests.Commands
 {
-    public class UpdateLeaveRequestCommand : IRequest<BaseCommandResponse>
+    public class UpdateLeaveRequestCommand : IRequest<Unit>
     {
         public UpdateLeaveRequestDto UpdateLeaveRequestDto { get; set; }
         public ChangeLeaveRequestAprovalDto ChangeLeaveRequestAprovalDto { get; set; }
+        public int Id { get; set; }
     }
 }

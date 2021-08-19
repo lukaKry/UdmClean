@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UdmClean.Application.Contracts.Persistance;
+using UdmClean.Application.Contracts.Persistence;
 using UdmClean.Application.DTOs.LeaveType;
 using UdmClean.Application.Features.LeaveTypes.Handlers.Queries;
 using UdmClean.Application.Features.LeaveTypes.Requests.Queries;
@@ -18,11 +19,11 @@ namespace UdmClean.Application.UnitTests.LeaveTypes.Queries
 {
     public class GetLeaveTypeDetailRequestHandlerTest
     {
+        private readonly IUnitOfWork _mockUnitOfWork;
         private readonly IMapper _mapper;
-        private readonly ILeaveTypeRepository _mockRepo;
         public GetLeaveTypeDetailRequestHandlerTest()
         {
-            _mockRepo = MockLeaveTypeRepository.GetLeaveTypeRepository().Object;
+            _mockUnitOfWork = MockUnitOfWork.GetUnitOfWork().Object;
 
             var mapperConfiguration = new MapperConfiguration(p => p.AddProfile<MappingProfile>());
             _mapper = mapperConfiguration.CreateMapper();
@@ -31,7 +32,7 @@ namespace UdmClean.Application.UnitTests.LeaveTypes.Queries
         [Fact]
         public async Task Handle_CalledWithExistingId_ReturnsLeaveTypeDtoObject()
         {
-            var handler = new GetLeaveTypeDetailRequestHandler(_mockRepo, _mapper);
+            var handler = new GetLeaveTypeDetailRequestHandler(_mockUnitOfWork, _mapper);
 
             var result = await handler.Handle(new GetLeaveTypeDetailRequest() { Id = 1 }, CancellationToken.None);
 
@@ -39,13 +40,13 @@ namespace UdmClean.Application.UnitTests.LeaveTypes.Queries
             result.Id.ShouldBe(1);
         }
 
-        [Fact]
+        [Fact(Skip = "not implemented yet")]
         public async Task Handle_CalledWithoutIdParameter_ThrowsException()
         {
             // brak reakcji na taki przypadek w metodzie Handle()
         }
 
-        [Fact]
+        [Fact(Skip = "not implemented yet")]
         public async Task Handle_CalledWithNonExistingId_ThrowsNotFoundException()
         {
             // this case also isn't covered yet

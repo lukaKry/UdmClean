@@ -9,21 +9,22 @@ using UdmClean.Application.Features.LeaveRequests.Requests.Commands;
 using UdmClean.Application.Contracts.Persistance;
 using UdmClean.Domain;
 using UdmClean.Application.Responses;
+using UdmClean.Application.Contracts.Persistence;
 
 namespace UdmClean.Application.Features.LeaveRequests.Handlers.Commands
 {
     public class DeleteLeaveRequestCommandHandler : IRequestHandler<DeleteLeaveRequestCommand, BaseCommandResponse>
     {
-        private readonly ILeaveRequestRepository _leaveRequestRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteLeaveRequestCommandHandler(ILeaveRequestRepository leaveRequestRepository)
+        public DeleteLeaveRequestCommandHandler(IUnitOfWork unitOfWork)
         {
-            _leaveRequestRepository = leaveRequestRepository;
+            _unitOfWork = unitOfWork;
         }
         public async Task<BaseCommandResponse> Handle(DeleteLeaveRequestCommand request, CancellationToken cancellationToken)
         {
             var response = new BaseCommandResponse();
-            var leaveRequest = await _leaveRequestRepository.GetAsync(request.Id);
+            var leaveRequest = await _unitOfWork.LeaveRequestRepository.GetAsync(request.Id);
 
             if (leaveRequest == null)
             {
@@ -32,7 +33,8 @@ namespace UdmClean.Application.Features.LeaveRequests.Handlers.Commands
             }
             else
             {
-                await _leaveRequestRepository.DeleteAsync(leaveRequest);
+                await _unitOfWork.LeaveRequestRepository.DeleteAsync(leaveRequest);
+                await _unitOfWork.Save();
 
                 response.Success = true;
                 response.Message = "Item deleted successfully.";

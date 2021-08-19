@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -44,6 +45,9 @@ namespace Udm.Clean.Api.Controllers
 
         // POST api/<LeaveTypeController>
         [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [Authorize(Roles = "Administrator")]
         public async Task<ActionResult<BaseCommandResponse>> Post([FromBody] CreateLeaveTypeDto leaveTypeDto)
         {
             var response = await _mediator.Send(new CreateLeaveTypeCommand() { LeaveTypeDto = leaveTypeDto });
@@ -51,7 +55,11 @@ namespace Udm.Clean.Api.Controllers
         }
 
         // PUT api/<LeaveTypeController>
-        [HttpPut]
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        [Authorize(Roles = "Administrator")]
         public async Task<ActionResult> Put([FromBody] LeaveTypeDto leaveTypeDto)
         {
             await _mediator.Send(new UpdateLeaveTypeCommand() { LeaveTypeDto = leaveTypeDto });
@@ -60,6 +68,10 @@ namespace Udm.Clean.Api.Controllers
 
         // DELETE api/<LeaveTypeController>/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        [Authorize(Roles = "Administrator")]
         public async Task<ActionResult> Delete(int id)
         {
             await _mediator.Send(new DeleteLeaveTypeCommand() { Id = id });

@@ -8,23 +8,31 @@ using System.Threading.Tasks;
 using UdmClean.Application.DTOs.LeaveRequest;
 using UdmClean.Application.Features.LeaveRequests.Requests.Queries;
 using UdmClean.Application.Contracts.Persistance;
+using UdmClean.Application.Contracts.Identity;
+using UdmClean.Application.Contracts.Persistence;
 
 namespace UdmClean.Application.Features.LeaveRequests.Handlers.Queries
 {
     public class GetLeaveRequestDetailRequestHandler : IRequestHandler<GetLeaveRequestDetailRequest, LeaveRequestDto>
     {
-        private readonly ILeaveRequestRepository _leaveRequestRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IUserService _userService;
 
-        public GetLeaveRequestDetailRequestHandler(ILeaveRequestRepository leaveRequestRepository, IMapper mapper)
+        public GetLeaveRequestDetailRequestHandler(
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
+            IUserService userService)
         {
-            _leaveRequestRepository = leaveRequestRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _userService = userService;
         }
         public async Task<LeaveRequestDto> Handle(GetLeaveRequestDetailRequest request, CancellationToken cancellationToken)
         {
-            var leaveRequest = await _leaveRequestRepository.GetLeaveRequestWithDetailsAsync(request.Id);
-            return _mapper.Map<LeaveRequestDto>(leaveRequest);
+            var leaveRequest = _mapper.Map<LeaveRequestDto>(await _unitOfWork.LeaveRequestRepository.GetLeaveRequestWithDetailsAsync(request.Id));
+            leaveRequest.Employee = await _userService.GetEmployee(leaveRequest.RequestingEmployeeId);
+            return leaveRequest;
         }
     }
 }

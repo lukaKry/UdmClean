@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UdmClean.Application.Contracts.Persistance;
@@ -20,12 +21,19 @@ namespace UdmClean.Persistence.Repositories
         {
             leaveRequest.Approved = approved;
             _dbContext.Entry(leaveRequest).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<List<LeaveRequest>> GetLeaveRequestsWithDetailsAsync()
         {
             return await _dbContext.LeaveRequests.Include(q => q.LeaveType).ToListAsync();
+        }
+
+        public async Task<List<LeaveRequest>> GetLeaveRequestsWithDetailsAsync(string userId)
+        {
+            var leaveRequests = await _dbContext.LeaveRequests.Where(q => q.RequestingEmployeeId == userId)
+                .Include(q => q.LeaveType)
+                .ToListAsync();
+            return leaveRequests;
         }
 
         public async Task<LeaveRequest> GetLeaveRequestWithDetailsAsync(int id)

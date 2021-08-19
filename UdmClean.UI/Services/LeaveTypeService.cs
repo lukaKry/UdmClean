@@ -84,7 +84,7 @@ namespace UdmClean.UI.Services
             {
                 LeaveTypeDto leaveTypeDto = _mapper.Map<LeaveTypeDto>(leaveType);
                 AddBearerToken();
-                await _client.LeaveTypePUTAsync(leaveTypeDto);
+                await _client.LeaveTypePUTAsync(id.ToString(), leaveTypeDto);
                 return new Response<int>() { Success = true };
             }
             catch(ApiException ex)

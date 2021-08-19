@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using UdmClean.Application.Constants;
 using UdmClean.Application.Contracts.Identity;
 using UdmClean.Application.Modules.Identity;
 using UdmClean.Identity.Models;
@@ -75,7 +76,7 @@ namespace UdmClean.Identity.Services
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("uid", user.Id)
+                new Claim(CustomClaimTypes.Uid, user.Id)
             }
             .Union(userClaims)
             .Union(roleClaims);

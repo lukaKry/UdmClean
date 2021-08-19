@@ -10,21 +10,22 @@ using UdmClean.Application.Features.LeaveTypes.Requests.Commands;
 using UdmClean.Application.Contracts.Persistance;
 using UdmClean.Domain;
 using UdmClean.Application.Responses;
+using UdmClean.Application.Contracts.Persistence;
 
 namespace UdmClean.Application.Features.LeaveTypes.Handlers.Commands
 {
     public class DeleteLeaveTypeCommandHandler : IRequestHandler<DeleteLeaveTypeCommand, BaseCommandResponse>
     {
-        private readonly ILeaveTypeRepository _leaveTypeRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteLeaveTypeCommandHandler(ILeaveTypeRepository leaveTypeRepository)
+        public DeleteLeaveTypeCommandHandler(IUnitOfWork unitOfWork)
         {
-            _leaveTypeRepository = leaveTypeRepository;
+            _unitOfWork = unitOfWork;
         }
         public async Task<BaseCommandResponse> Handle(DeleteLeaveTypeCommand request, CancellationToken cancellationToken)
         {
             var response = new BaseCommandResponse();
-            var leaveType = await _leaveTypeRepository.GetAsync(request.Id);
+            var leaveType = await _unitOfWork.LeaveTypeRepository.GetAsync(request.Id);
 
             if (leaveType == null)
             {
@@ -33,7 +34,8 @@ namespace UdmClean.Application.Features.LeaveTypes.Handlers.Commands
             }
             else
             {
-                await _leaveTypeRepository.DeleteAsync(leaveType);
+                await _unitOfWork.LeaveTypeRepository.DeleteAsync(leaveType);
+                await _unitOfWork.Save();
 
                 response.Success = true;
                 response.Message = "Item deleted successfully.";

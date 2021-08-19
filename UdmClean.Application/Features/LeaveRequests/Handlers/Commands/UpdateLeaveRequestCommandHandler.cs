@@ -11,65 +11,54 @@ using UdmClean.Application.Features.LeaveRequests.Requests.Commands;
 using UdmClean.Application.Contracts.Persistance;
 using UdmClean.Application.Responses;
 using System.Linq;
+using UdmClean.Application.Contracts.Persistence;
 
 namespace UdmClean.Application.Features.LeaveRequests.Handlers.Commands
 {
-    public class UpdateLeaveRequestCommandHandler : IRequestHandler<UpdateLeaveRequestCommand, BaseCommandResponse>
+    public class UpdateLeaveRequestCommandHandler : IRequestHandler<UpdateLeaveRequestCommand, Unit>
     {
-        private readonly ILeaveRequestRepository _leaveRequestRepository;
-        private readonly ILeaveTypeRepository _leaveTypeRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public UpdateLeaveRequestCommandHandler(ILeaveRequestRepository leaveRequestRepository, ILeaveTypeRepository leaveTypeRepository, IMapper mapper)
+        public UpdateLeaveRequestCommandHandler(
+            IUnitOfWork unitOfWork,
+            IMapper mapper)
         {
-            _leaveRequestRepository = leaveRequestRepository;
-            _leaveTypeRepository = leaveTypeRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<BaseCommandResponse> Handle(UpdateLeaveRequestCommand request, CancellationToken cancellationToken)
+
+        public async Task<Unit> Handle(UpdateLeaveRequestCommand request, CancellationToken cancellationToken)
         {
-            var response = new BaseCommandResponse();
+            var leaveRequest = await _unitOfWork.LeaveRequestRepository.GetAsync(request.Id);
 
             if (request.UpdateLeaveRequestDto != null)
             {
-                var validator = new UpdateLeaveRequestDtoValidator(_leaveTypeRepository, _leaveRequestRepository);
+                var validator = new UpdateLeaveRequestDtoValidator(_unitOfWork.LeaveTypeRepository, _unitOfWork.LeaveRequestRepository);
                 var validationResult = await validator.ValidateAsync(request.UpdateLeaveRequestDto);
                 if (validationResult.IsValid == false)
-                {
-                    response.Success = false;
-                    response.Message = "Data validation error. Check Errors for details.";
-                    response.Errors = validationResult.Errors.Select(q => q.ErrorMessage).ToList();
-                }
-                else
-                {
-                    var leaveRequest = await _leaveRequestRepository.GetAsync(request.UpdateLeaveRequestDto.Id);
-                    _mapper.Map(request.UpdateLeaveRequestDto, leaveRequest);
-                    await _leaveRequestRepository.UpdateAsync(leaveRequest);
+                    throw new ValidationException(validationResult);
+                _mapper.Map(request.UpdateLeaveRequestDto, leaveRequest);
 
-                    response.Success = true;
-                    response.Message = "Update made successfully.";
-                    response.Id = leaveRequest.Id;
-                }
+                await _unitOfWork.LeaveRequestRepository.UpdateAsync(leaveRequest);
+                await _unitOfWork.Save();
             }
             else if (request.ChangeLeaveRequestAprovalDto != null)
             {
-                var leaveRequest = await _leaveRequestRepository.GetAsync(request.UpdateLeaveRequestDto.Id);
+                await _unitOfWork.LeaveRequestRepository.ChangeApprovalStatus(leaveRequest, request.ChangeLeaveRequestAprovalDto.Approved);
+                if (request.ChangeLeaveRequestAprovalDto.Approved.Value)
+                {
+                    var allocation = await _unitOfWork.LeaveAllocationRepository.GetUserAllocations(leaveRequest.RequestingEmployeeId, leaveRequest.LeaveTypeId);
+                    int daysRequested = (int)(leaveRequest.EndDate - leaveRequest.StartDate).TotalDays;
 
-                if (leaveRequest is null)
-                {
-                    response.Success = false;
-                    response.Message = "Not found error. There is no item with given id.";
+                    allocation.NumberOfDays -= daysRequested;
+
+                    await _unitOfWork.LeaveAllocationRepository.UpdateAsync(allocation);
                 }
-                else
-                {
-                    await _leaveRequestRepository.ChangeApprovalStatus(leaveRequest, request.ChangeLeaveRequestAprovalDto.Approved);
-                    
-                    response.Success = true;
-                    response.Message = "Update made successfully.";
-                    response.Id = leaveRequest.Id;
-                }
+                await _unitOfWork.Save();
             }
-            return response;
+
+            return Unit.Value;
         }
     }
 }
