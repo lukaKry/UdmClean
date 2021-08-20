@@ -43,6 +43,10 @@ namespace UdmClean.Application.Features.LeaveTypes.Handlers.Commands
             else
             {
                 var leaveType = await _unitOfWork.LeaveTypeRepository.GetAsync(request.LeaveTypeDto.Id);
+
+                if (leaveType is null) throw new NotFoundException(nameof(leaveType), request.LeaveTypeDto.Id);
+
+
                 _mapper.Map(request.LeaveTypeDto, leaveType);
                 await _unitOfWork.LeaveTypeRepository.UpdateAsync(leaveType);
                 await _unitOfWork.Save();

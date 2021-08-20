@@ -1979,13 +1979,13 @@ namespace UdmClean.UI.Services.Base
         public int LeaveTypeId { get; set; }
     
         [Newtonsoft.Json.JsonProperty("dateRequested", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset DateRequested { get; set; }
+        public System.DateTime DateRequested { get; set; }
     
         [Newtonsoft.Json.JsonProperty("requestComments", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string RequestComments { get; set; }
     
         [Newtonsoft.Json.JsonProperty("dateActioned", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? DateActioned { get; set; }
+        public System.DateTime? DateActioned { get; set; }
     
         [Newtonsoft.Json.JsonProperty("approved", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool? Approved { get; set; }

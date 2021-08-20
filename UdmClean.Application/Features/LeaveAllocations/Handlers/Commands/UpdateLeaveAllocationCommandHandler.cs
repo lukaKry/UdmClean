@@ -42,6 +42,9 @@ namespace UdmClean.Application.Features.LeaveAllocations.Handlers.Commands
             else
             {
                 var leaveAllocation = await _unitOfWork.LeaveAllocationRepository.GetAsync(request.LeaveAllocationDto.Id);
+
+                if (leaveAllocation is null) throw new NotFoundException(nameof(leaveAllocation), request.LeaveAllocationDto.Id);
+
                 _mapper.Map(request.LeaveAllocationDto, leaveAllocation);
                 await _unitOfWork.LeaveAllocationRepository.UpdateAsync(leaveAllocation);
                 await _unitOfWork.Save();

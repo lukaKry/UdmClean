@@ -32,6 +32,9 @@ namespace UdmClean.Application.Features.LeaveRequests.Handlers.Commands
         {
             var leaveRequest = await _unitOfWork.LeaveRequestRepository.GetAsync(request.Id);
 
+            if (leaveRequest is null) throw new NotFoundException(nameof(leaveRequest), request.Id);
+
+
             if (request.UpdateLeaveRequestDto != null)
             {
                 var validator = new UpdateLeaveRequestDtoValidator(_unitOfWork.LeaveTypeRepository, _unitOfWork.LeaveRequestRepository);
