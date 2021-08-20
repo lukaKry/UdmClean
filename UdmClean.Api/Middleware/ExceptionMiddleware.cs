@@ -48,7 +48,7 @@ namespace UdmClean.Api.Middleware
                     statusCode = HttpStatusCode.BadRequest;
                     result = JsonConvert.SerializeObject(validationException.Errors);
                     break;
-                case NotFoundException notFoundException:
+                case NotFoundException notFoundException: 
                     statusCode = HttpStatusCode.NotFound;
                     break;
                 default:
