@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UdmClean.Api.Middleware;
 using UdmClean.Application;
 using UdmClean.Identity;
 using UdmClean.Infrastructure;
@@ -54,6 +55,8 @@ namespace UdmClean.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseAuthentication();
 
